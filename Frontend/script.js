@@ -1,33 +1,36 @@
 ```javascript
-// ============================================================
+// =========================================================
 // PDF.JS CONFIGURATION
-// ============================================================
+// =========================================================
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 
-// ============================================================
+// =========================================================
 // VARIABLES
-// ============================================================
+// =========================================================
 
 let pdfFiles = [];
 
 let mergedPdfBytes = null;
 
 
-// ============================================================
-// HTML ELEMENTS
-// ============================================================
+// =========================================================
+// GET HTML ELEMENTS
+// =========================================================
 
 const pdfInput =
     document.getElementById("pdfInput");
 
-const fileList =
-    document.getElementById("fileList");
+const uploadMessage =
+    document.getElementById("uploadMessage");
 
 const arrangeSection =
     document.getElementById("arrangeSection");
+
+const currentOrderSection =
+    document.getElementById("currentOrderSection");
 
 const viewSection =
     document.getElementById("viewSection");
@@ -38,17 +41,20 @@ const mergeSection =
 const resultSection =
     document.getElementById("resultSection");
 
+const fileList =
+    document.getElementById("fileList");
+
+const currentOrder =
+    document.getElementById("currentOrder");
+
 const pdfSelect =
     document.getElementById("pdfSelect");
 
-const selectedFileName =
-    document.getElementById("selectedFileName");
+const selectedPdfName =
+    document.getElementById("selectedPdfName");
 
 const pdfViewer =
     document.getElementById("pdfViewer");
-
-const mergeOrder =
-    document.getElementById("mergeOrder");
 
 const mergeButton =
     document.getElementById("mergeButton");
@@ -63,9 +69,9 @@ const downloadButton =
     document.getElementById("downloadButton");
 
 
-// ============================================================
+// =========================================================
 // UPLOAD PDF FILES
-// ============================================================
+// =========================================================
 
 pdfInput.addEventListener(
     "change",
@@ -74,12 +80,17 @@ pdfInput.addEventListener(
         const selectedFiles =
             Array.from(pdfInput.files);
 
+
+        // No files selected
+
         if (selectedFiles.length === 0) {
+
             return;
+
         }
 
 
-        // Check that all files are PDFs
+        // Check PDF files
 
         const invalidFiles =
             selectedFiles.filter(
@@ -90,64 +101,97 @@ pdfInput.addEventListener(
 
         if (invalidFiles.length > 0) {
 
-            alert(
-                "Please select only PDF files."
-            );
+            uploadMessage.textContent =
+                "❌ Please select only PDF files.";
+
+            uploadMessage.className =
+                "error-message";
 
             pdfInput.value = "";
 
             return;
+
         }
 
 
-        // Store files
+        // Minimum 2 PDF files
 
-        pdfFiles = selectedFiles;
+        if (selectedFiles.length < 2) {
+
+            uploadMessage.textContent =
+                "⚠️ Please select at least 2 PDF files.";
+
+            uploadMessage.className =
+                "error-message";
+
+            return;
+
+        }
+
+
+        // Store PDF files
+
+        pdfFiles =
+            selectedFiles;
 
 
         // Clear previous result
 
         mergedPdfBytes = null;
 
-        resultSection.style.display = "none";
+        resultSection.classList.add(
+            "hidden"
+        );
 
 
-        // Update UI
+        uploadMessage.textContent =
+            `✅ ${pdfFiles.length} PDF files uploaded successfully.`;
+
+        uploadMessage.className =
+            "success-message";
+
+
+        // Update interface
 
         updateFileList();
 
+        updateCurrentOrder();
+
         updatePDFSelect();
 
-        updateMergeOrder();
+
+        // Show sections
+
+        arrangeSection.classList.remove(
+            "hidden"
+        );
+
+        currentOrderSection.classList.remove(
+            "hidden"
+        );
+
+        viewSection.classList.remove(
+            "hidden"
+        );
+
+        mergeSection.classList.remove(
+            "hidden"
+        );
 
 
-        arrangeSection.style.display =
-            "block";
+        // Display first PDF
 
-        viewSection.style.display =
-            "block";
+        pdfSelect.value = "0";
 
-        mergeSection.style.display =
-            "block";
-
-
-        // Show first PDF
-
-        if (pdfFiles.length > 0) {
-
-            pdfSelect.value = "0";
-
-            displaySelectedPDF();
-
-        }
+        displaySelectedPDF();
 
     }
 );
 
 
-// ============================================================
-// DISPLAY FILE LIST
-// ============================================================
+// =========================================================
+// UPDATE FILE LIST
+// =========================================================
 
 function updateFileList() {
 
@@ -155,14 +199,16 @@ function updateFileList() {
 
 
     pdfFiles.forEach(
-        (file, index) => {
+        function (file, index) {
 
-            const item =
+            const fileItem =
                 document.createElement("div");
 
-            item.className =
+            fileItem.className =
                 "file-item";
 
+
+            // Number
 
             const number =
                 document.createElement("div");
@@ -174,13 +220,15 @@ function updateFileList() {
                 index + 1;
 
 
-            const name =
+            // File name
+
+            const fileName =
                 document.createElement("div");
 
-            name.className =
+            fileName.className =
                 "file-name";
 
-            name.textContent =
+            fileName.textContent =
                 "📄 " + file.name;
 
 
@@ -190,7 +238,7 @@ function updateFileList() {
                 document.createElement("button");
 
             upButton.className =
-                "file-button";
+                "order-button";
 
             upButton.textContent =
                 "⬆️";
@@ -198,9 +246,14 @@ function updateFileList() {
             upButton.disabled =
                 index === 0;
 
+
             upButton.addEventListener(
                 "click",
-                () => moveFileUp(index)
+                function () {
+
+                    moveFileUp(index);
+
+                }
             );
 
 
@@ -210,7 +263,7 @@ function updateFileList() {
                 document.createElement("button");
 
             downButton.className =
-                "file-button";
+                "order-button";
 
             downButton.textContent =
                 "⬇️";
@@ -218,22 +271,37 @@ function updateFileList() {
             downButton.disabled =
                 index === pdfFiles.length - 1;
 
+
             downButton.addEventListener(
                 "click",
-                () => moveFileDown(index)
+                function () {
+
+                    moveFileDown(index);
+
+                }
             );
 
 
-            item.appendChild(number);
+            fileItem.appendChild(
+                number
+            );
 
-            item.appendChild(name);
+            fileItem.appendChild(
+                fileName
+            );
 
-            item.appendChild(upButton);
+            fileItem.appendChild(
+                upButton
+            );
 
-            item.appendChild(downButton);
+            fileItem.appendChild(
+                downButton
+            );
 
 
-            fileList.appendChild(item);
+            fileList.appendChild(
+                fileItem
+            );
 
         }
     );
@@ -241,73 +309,137 @@ function updateFileList() {
 }
 
 
-// ============================================================
+// =========================================================
 // MOVE FILE UP
-// ============================================================
+// =========================================================
 
 function moveFileUp(index) {
 
-    if (index === 0) {
+    if (index <= 0) {
+
         return;
+
     }
 
 
-    const temp =
+    const temporary =
         pdfFiles[index - 1];
+
 
     pdfFiles[index - 1] =
         pdfFiles[index];
 
+
     pdfFiles[index] =
-        temp;
+        temporary;
 
 
-    updateFileList();
-
-    updatePDFSelect();
-
-    updateMergeOrder();
-
-    clearMergedResult();
+    refreshAfterOrderChange();
 
 }
 
 
-// ============================================================
+// =========================================================
 // MOVE FILE DOWN
-// ============================================================
+// =========================================================
 
 function moveFileDown(index) {
 
-    if (index === pdfFiles.length - 1) {
+    if (
+        index >=
+        pdfFiles.length - 1
+    ) {
+
         return;
+
     }
 
 
-    const temp =
+    const temporary =
         pdfFiles[index + 1];
+
 
     pdfFiles[index + 1] =
         pdfFiles[index];
 
+
     pdfFiles[index] =
-        temp;
+        temporary;
 
 
-    updateFileList();
-
-    updatePDFSelect();
-
-    updateMergeOrder();
-
-    clearMergedResult();
+    refreshAfterOrderChange();
 
 }
 
 
-// ============================================================
-// UPDATE PDF SELECT BOX
-// ============================================================
+// =========================================================
+// REFRESH AFTER ARRANGING FILES
+// =========================================================
+
+function refreshAfterOrderChange() {
+
+    updateFileList();
+
+    updateCurrentOrder();
+
+    updatePDFSelect();
+
+
+    // Clear previous merged PDF
+
+    mergedPdfBytes = null;
+
+    resultSection.classList.add(
+        "hidden"
+    );
+
+
+    // Display first PDF
+
+    pdfSelect.value = "0";
+
+    displaySelectedPDF();
+
+}
+
+
+// =========================================================
+// UPDATE CURRENT FILE ORDER
+// =========================================================
+
+function updateCurrentOrder() {
+
+    currentOrder.innerHTML = "";
+
+
+    pdfFiles.forEach(
+        function (file, index) {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "order-item";
+
+
+            item.innerHTML =
+                `<strong>${index + 1}.</strong>
+                 📄 ${file.name}`;
+
+
+            currentOrder.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+// =========================================================
+// UPDATE PDF SELECT
+// =========================================================
 
 function updatePDFSelect() {
 
@@ -315,19 +447,23 @@ function updatePDFSelect() {
 
 
     pdfFiles.forEach(
-        (file, index) => {
+        function (file, index) {
 
             const option =
                 document.createElement("option");
 
+
             option.value =
                 index;
+
 
             option.textContent =
                 `PDF ${index + 1} - ${file.name}`;
 
 
-            pdfSelect.appendChild(option);
+            pdfSelect.appendChild(
+                option
+            );
 
         }
     );
@@ -335,9 +471,9 @@ function updatePDFSelect() {
 }
 
 
-// ============================================================
-// SELECT PDF
-// ============================================================
+// =========================================================
+// PDF SELECT CHANGE
+// =========================================================
 
 pdfSelect.addEventListener(
     "change",
@@ -349,26 +485,29 @@ pdfSelect.addEventListener(
 );
 
 
-// ============================================================
+// =========================================================
 // DISPLAY SELECTED PDF
-// ============================================================
+// =========================================================
 
 async function displaySelectedPDF() {
 
     const index =
         Number(pdfSelect.value);
 
+
     const file =
         pdfFiles[index];
 
 
     if (!file) {
+
         return;
+
     }
 
 
-    selectedFileName.textContent =
-        `PDF ${index + 1}: ${file.name}`;
+    selectedPdfName.textContent =
+        `📄 ${file.name}`;
 
 
     pdfViewer.innerHTML =
@@ -382,15 +521,17 @@ async function displaySelectedPDF() {
 
 
         const pdf =
-            await pdfjsLib.getDocument(
-                {
+            await pdfjsLib
+                .getDocument({
                     data: arrayBuffer
-                }
-            ).promise;
+                })
+                .promise;
 
 
         pdfViewer.innerHTML = "";
 
+
+        // Display every page
 
         for (
             let pageNumber = 1;
@@ -398,7 +539,7 @@ async function displaySelectedPDF() {
             pageNumber++
         ) {
 
-            await renderPage(
+            await renderPDFPage(
                 pdf,
                 pageNumber,
                 pdfViewer
@@ -411,40 +552,42 @@ async function displaySelectedPDF() {
     catch (error) {
 
         pdfViewer.innerHTML =
-            `<p class="message error">
+            `<div class="error-message">
                 ❌ Error displaying PDF:
                 ${error.message}
-            </p>`;
+            </div>`;
 
     }
 
 }
 
 
-// ============================================================
+// =========================================================
 // RENDER PDF PAGE
-// ============================================================
+// =========================================================
 
-async function renderPage(
+async function renderPDFPage(
     pdf,
     pageNumber,
     container
 ) {
 
     const page =
-        await pdf.getPage(pageNumber);
+        await pdf.getPage(
+            pageNumber
+        );
 
 
     const scale = 1.5;
 
 
     const viewport =
-        page.getViewport(
-            {
-                scale: scale
-            }
-        );
+        page.getViewport({
+            scale: scale
+        });
 
+
+    // Page container
 
     const pageContainer =
         document.createElement("div");
@@ -452,6 +595,8 @@ async function renderPage(
     pageContainer.className =
         "pdf-page";
 
+
+    // Canvas
 
     const canvas =
         document.createElement("canvas");
@@ -468,13 +613,15 @@ async function renderPage(
         viewport.height;
 
 
-    const caption =
+    // Page number
+
+    const pageNumberText =
         document.createElement("div");
 
-    caption.className =
-        "page-caption";
+    pageNumberText.className =
+        "page-number";
 
-    caption.textContent =
+    pageNumberText.textContent =
         `Page ${pageNumber}`;
 
 
@@ -483,7 +630,7 @@ async function renderPage(
     );
 
     pageContainer.appendChild(
-        caption
+        pageNumberText
     );
 
 
@@ -492,79 +639,24 @@ async function renderPage(
     );
 
 
-    await page.render(
-        {
-            canvasContext: context,
-            viewport: viewport
-        }
-    ).promise;
+    // Render
+
+    await page.render({
+
+        canvasContext:
+            context,
+
+        viewport:
+            viewport
+
+    }).promise;
 
 }
 
 
-// ============================================================
-// UPDATE MERGE ORDER
-// ============================================================
-
-function updateMergeOrder() {
-
-    mergeOrder.innerHTML = "";
-
-
-    if (pdfFiles.length === 0) {
-        return;
-    }
-
-
-    pdfFiles.forEach(
-        (file, index) => {
-
-            const item =
-                document.createElement("p");
-
-            item.innerHTML =
-                `<strong>${index + 1}.</strong>
-                 ${file.name}`;
-
-
-            mergeOrder.appendChild(item);
-
-        }
-    );
-
-
-    if (pdfFiles.length < 2) {
-
-        mergeButton.disabled =
-            true;
-
-        mergeMessage.className =
-            "message error";
-
-        mergeMessage.style.display =
-            "block";
-
-        mergeMessage.textContent =
-            "⚠️ Please upload at least 2 PDF files.";
-
-    }
-
-    else {
-
-        mergeButton.disabled =
-            false;
-
-        mergeMessage.style.display =
-            "none";
-
-    }
-
-}
-
-
-// ============================================================
-// MERGE PDF BUTTON
-// ============================================================
+// =========================================================
+// MERGE PDF
+// =========================================================
 
 mergeButton.addEventListener(
     "click",
@@ -572,11 +664,14 @@ mergeButton.addEventListener(
 
         if (pdfFiles.length < 2) {
 
-            showMergeError(
-                "⚠️ Please upload at least 2 PDF files."
-            );
+            mergeMessage.textContent =
+                "⚠️ Please upload at least 2 PDF files.";
+
+            mergeMessage.className =
+                "error-message";
 
             return;
+
         }
 
 
@@ -585,17 +680,20 @@ mergeButton.addEventListener(
             mergeButton.disabled =
                 true;
 
+
             mergeButton.textContent =
-                "⏳ Merging PDFs...";
+                "⏳ Merging PDF...";
 
 
             // Create new PDF
 
             const mergedPdf =
-                await PDFLib.PDFDocument.create();
+                await PDFLib
+                    .PDFDocument
+                    .create();
 
 
-            // Process every uploaded PDF
+            // Process files in current order
 
             for (
                 const file of pdfFiles
@@ -606,9 +704,11 @@ mergeButton.addEventListener(
 
 
                 const sourcePdf =
-                    await PDFLib.PDFDocument.load(
-                        fileBytes
-                    );
+                    await PDFLib
+                        .PDFDocument
+                        .load(
+                            fileBytes
+                        );
 
 
                 const pageIndices =
@@ -623,7 +723,7 @@ mergeButton.addEventListener(
 
 
                 copiedPages.forEach(
-                    page => {
+                    function (page) {
 
                         mergedPdf.addPage(
                             page
@@ -635,7 +735,7 @@ mergeButton.addEventListener(
             }
 
 
-            // Save merged PDF
+            // Save PDF
 
             mergedPdfBytes =
                 await mergedPdf.save();
@@ -647,35 +747,38 @@ mergeButton.addEventListener(
                 new Blob(
                     [mergedPdfBytes],
                     {
-                        type: "application/pdf"
+                        type:
+                            "application/pdf"
                     }
                 );
 
 
             // Create download URL
 
-            const downloadURL =
-                URL.createObjectURL(blob);
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
 
 
             downloadButton.href =
-                downloadURL;
+                url;
 
 
-            // Display success
-
-            mergeMessage.className =
-                "message success";
-
-            mergeMessage.style.display =
-                "block";
+            // Show success
 
             mergeMessage.textContent =
                 "✅ PDF files merged successfully!";
 
+            mergeMessage.className =
+                "success-message";
 
-            resultSection.style.display =
-                "block";
+
+            // Show result section
+
+            resultSection.classList.remove(
+                "hidden"
+            );
 
 
             // Display merged PDF
@@ -687,22 +790,23 @@ mergeButton.addEventListener(
 
             // Scroll to result
 
-            resultSection.scrollIntoView(
-                {
-                    behavior: "smooth"
-                }
-            );
+            resultSection.scrollIntoView({
+                behavior: "smooth"
+            });
 
         }
 
         catch (error) {
 
-            showMergeError(
-                "❌ Error while merging PDFs: " +
-                error.message
-            );
+            mergeMessage.textContent =
+                "❌ Error while merging PDF: " +
+                error.message;
+
+            mergeMessage.className =
+                "error-message";
 
         }
+
 
         finally {
 
@@ -710,7 +814,7 @@ mergeButton.addEventListener(
                 false;
 
             mergeButton.textContent =
-                "🔗 Merge PDF Files";
+                "🔗 Merge PDF";
 
         }
 
@@ -718,9 +822,9 @@ mergeButton.addEventListener(
 );
 
 
-// ============================================================
+// =========================================================
 // DISPLAY MERGED PDF
-// ============================================================
+// =========================================================
 
 async function displayMergedPDF(
     pdfBytes
@@ -733,15 +837,17 @@ async function displayMergedPDF(
     try {
 
         const pdf =
-            await pdfjsLib.getDocument(
-                {
+            await pdfjsLib
+                .getDocument({
                     data: pdfBytes
-                }
-            ).promise;
+                })
+                .promise;
 
 
         mergedPdfViewer.innerHTML = "";
 
+
+        // Render every page
 
         for (
             let pageNumber = 1;
@@ -749,7 +855,7 @@ async function displayMergedPDF(
             pageNumber++
         ) {
 
-            await renderPage(
+            await renderPDFPage(
                 pdf,
                 pageNumber,
                 mergedPdfViewer
@@ -762,49 +868,12 @@ async function displayMergedPDF(
     catch (error) {
 
         mergedPdfViewer.innerHTML =
-            `<p class="message error">
+            `<div class="error-message">
                 ❌ Error displaying merged PDF:
                 ${error.message}
-            </p>`;
+            </div>`;
 
     }
-
-}
-
-
-// ============================================================
-// CLEAR MERGED RESULT
-// ============================================================
-
-function clearMergedResult() {
-
-    mergedPdfBytes = null;
-
-    resultSection.style.display =
-        "none";
-
-    mergedPdfViewer.innerHTML =
-        "";
-
-}
-
-
-// ============================================================
-// SHOW MERGE ERROR
-// ============================================================
-
-function showMergeError(
-    message
-) {
-
-    mergeMessage.className =
-        "message error";
-
-    mergeMessage.style.display =
-        "block";
-
-    mergeMessage.textContent =
-        message;
 
 }
 ```
