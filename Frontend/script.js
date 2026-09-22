@@ -1,680 +1,1091 @@
-/* =========================================================
-   PRAGYANAI PDF STUDIO
-   FASTAPI PDF + IMAGE MERGER
-========================================================= */
+```javascript
+// ============================================================
+// PRAGYANAI PDF STUDIO
+// Frontend JavaScript connected with FastAPI
+// ============================================================
 
 
-/* =========================================================
-   ELEMENTS
-========================================================= */
+// ============================================================
+// FASTAPI BASE URL
+// ============================================================
+
+const API_BASE_URL = "http://127.0.0.1:8000";
+
+
+// ============================================================
+// API ENDPOINTS
+// ============================================================
+
+const API = {
+
+    HEALTH: `${API_BASE_URL}/api/health`,
+
+    MERGE: `${API_BASE_URL}/api/merge`,
+
+    FILES: `${API_BASE_URL}/api/files`,
+
+    CLEAR: `${API_BASE_URL}/api/clear`
+};
+
+
+// ============================================================
+// GLOBAL VARIABLES
+// ============================================================
+
+let selectedFiles = [];
+
+let mergedFileBlob = null;
+
+let mergedFileUrl = null;
+
+let mergedFileName = "PragyanAI-Merged.pdf";
+
+
+// ============================================================
+// GET HTML ELEMENTS
+// ============================================================
 
 const fileInput = document.getElementById("fileInput");
+
 const browseBtn = document.getElementById("browseBtn");
+
 const dropZone = document.getElementById("dropZone");
 
 const fileList = document.getElementById("fileList");
+
 const fileCount = document.getElementById("fileCount");
 
-const clearBtn = document.getElementById("clearBtn");
 const mergeBtn = document.getElementById("mergeBtn");
 
+const clearBtn = document.getElementById("clearBtn");
+
+const downloadBtn = document.getElementById("downloadBtn");
+
+const viewMergedBtn = document.getElementById("viewMergedBtn");
+
+const mergedFileArea = document.getElementById("mergedFileArea");
+
 const successMessage = document.getElementById("successMessage");
-const successText = document.getElementById("successText");
-
-const mergedFileArea =
-    document.getElementById("mergedFileArea");
-
-const viewMergedBtn =
-    document.getElementById("viewMergedBtn");
-
-const downloadBtn =
-    document.getElementById("downloadBtn");
 
 
-/* =========================================================
-   FASTAPI API URL
-========================================================= */
+// ============================================================
+// SUPPORTED FILE TYPES
+// ============================================================
 
-/*
-   If HTML and FastAPI are running on the same server:
-   
-       const API_URL = "/api/merge";
-
-   If FastAPI is running separately on localhost:8000:
-   
-       const API_URL = "http://127.0.0.1:8000/api/merge";
-*/
-
-const API_URL =
-    "http://127.0.0.1:8000/api/merge";
+const allowedExtensions = [
+    ".pdf",
+    ".jpg",
+    ".jpeg",
+    ".png"
+];
 
 
-/* =========================================================
-   VARIABLES
-========================================================= */
+// ============================================================
+// INITIALIZATION
+// ============================================================
 
-let files = [];
+document.addEventListener("DOMContentLoaded", () => {
 
-let mergedPdfBlob = null;
+    checkBackendHealth();
 
-let mergedPdfUrl = null;
+    updateFileList();
+
+});
 
 
-/* =========================================================
-   BROWSE BUTTON
-========================================================= */
+// ============================================================
+// BROWSE FILES
+// ============================================================
 
-browseBtn.addEventListener(
-    "click",
-    function () {
+if (browseBtn) {
+
+    browseBtn.addEventListener("click", () => {
 
         fileInput.click();
 
-    }
-);
+    });
+
+}
 
 
-/* =========================================================
-   FILE INPUT
-========================================================= */
+// ============================================================
+// FILE INPUT
+// ============================================================
 
-fileInput.addEventListener(
-    "change",
-    function (event) {
+if (fileInput) {
 
-        const selectedFiles =
-            Array.from(event.target.files);
+    fileInput.addEventListener("change", (event) => {
 
-        addFiles(selectedFiles);
+        addFiles(event.target.files);
 
-        /*
-           Reset the input.
-
-           This allows the same file to be
-           selected again.
-        */
-
+        // Allow selecting the same file again
         fileInput.value = "";
 
-    }
-);
-
-
-/* =========================================================
-   ADD FILES
-========================================================= */
-
-function addFiles(selectedFiles) {
-
-    const validFiles =
-        selectedFiles.filter(
-            function (file) {
-
-                return isSupportedFile(file);
-
-            }
-        );
-
-
-    if (validFiles.length === 0) {
-
-        showMessage(
-            "Please select PDF, JPG, JPEG or PNG files.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    validFiles.forEach(
-        function (file) {
-
-            files.push(file);
-
-        }
-    );
-
-
-    renderFileList();
-
-
-    showMessage(
-        validFiles.length +
-        " file(s) added successfully.",
-        "success"
-    );
+    });
 
 }
 
 
-/* =========================================================
-   CHECK FILE TYPE
-========================================================= */
+// ============================================================
+// DRAG OVER
+// ============================================================
 
-function isSupportedFile(file) {
+if (dropZone) {
 
-    const allowedTypes = [
+    dropZone.addEventListener("dragover", (event) => {
 
-        "application/pdf",
+        event.preventDefault();
 
-        "image/jpeg",
+        dropZone.classList.add("drag-over");
 
-        "image/png"
-
-    ];
+    });
 
 
-    /*
-       Some browsers may not correctly
-       provide the MIME type.
+    // ========================================================
+    // DRAG LEAVE
+    // ========================================================
 
-       Therefore also check extension.
-    */
+    dropZone.addEventListener("dragleave", () => {
 
-    const fileName =
-        file.name.toLowerCase();
+        dropZone.classList.remove("drag-over");
 
-
-    const allowedExtensions = [
-
-        ".pdf",
-        ".jpg",
-        ".jpeg",
-        ".png"
-
-    ];
+    });
 
 
-    const extensionAllowed =
-        allowedExtensions.some(
-            function (extension) {
+    // ========================================================
+    // DROP FILES
+    // ========================================================
 
-                return fileName.endsWith(
-                    extension
-                );
+    dropZone.addEventListener("drop", (event) => {
 
-            }
-        );
+        event.preventDefault();
 
+        dropZone.classList.remove("drag-over");
 
-    return (
-        allowedTypes.includes(file.type) ||
-        extensionAllowed
-    );
+        addFiles(event.dataTransfer.files);
+
+    });
 
 }
 
 
-/* =========================================================
-   DRAG & DROP
-========================================================= */
+// ============================================================
+// ADD FILES
+// ============================================================
 
-dropZone.addEventListener(
-    "dragover",
-    function (event) {
+function addFiles(files) {
 
-        event.preventDefault();
+    for (const file of files) {
 
-        dropZone.classList.add(
-            "dragover"
-        );
+        if (!isValidFile(file)) {
 
-    }
-);
-
-
-dropZone.addEventListener(
-    "dragleave",
-    function () {
-
-        dropZone.classList.remove(
-            "dragover"
-        );
-
-    }
-);
-
-
-dropZone.addEventListener(
-    "drop",
-    function (event) {
-
-        event.preventDefault();
-
-        dropZone.classList.remove(
-            "dragover"
-        );
-
-
-        const droppedFiles =
-            Array.from(
-                event.dataTransfer.files
+            showError(
+                `${file.name} is not a supported file.`
             );
 
+            continue;
+        }
 
-        addFiles(droppedFiles);
+
+        // Prevent duplicate files
+        const alreadyExists = selectedFiles.some(
+            existingFile =>
+                existingFile.name === file.name &&
+                existingFile.size === file.size
+        );
+
+
+        if (alreadyExists) {
+
+            continue;
+
+        }
+
+
+        selectedFiles.push(file);
 
     }
-);
 
 
-/* =========================================================
-   RENDER FILE LIST
-========================================================= */
+    updateFileList();
 
-function renderFileList() {
+}
+
+
+// ============================================================
+// CHECK FILE TYPE
+// ============================================================
+
+function isValidFile(file) {
+
+    const fileName = file.name.toLowerCase();
+
+    return allowedExtensions.some(
+        extension => fileName.endsWith(extension)
+    );
+
+}
+
+
+// ============================================================
+// UPDATE FILE LIST
+// ============================================================
+
+function updateFileList() {
+
+    if (!fileList) return;
+
 
     fileList.innerHTML = "";
 
 
-    files.forEach(
-        function (file, index) {
+    fileCount.textContent =
+        `${selectedFiles.length} file(s)`;
 
-            const fileItem =
-                document.createElement(
-                    "div"
-                );
 
-            fileItem.className =
-                "file-item";
+    if (selectedFiles.length === 0) {
 
-
-            /* ============================
-               FILE NUMBER
-            ============================ */
-
-            const number =
-                document.createElement(
-                    "div"
-                );
-
-            number.className =
-                "file-number";
-
-            number.textContent =
-                index + 1;
-
-
-            /* ============================
-               FILE ICON
-            ============================ */
-
-            const icon =
-                document.createElement(
-                    "div"
-                );
-
-            icon.className =
-                "file-icon";
-
-
-            if (
-                file.type ===
-                "application/pdf" ||
-                file.name.toLowerCase()
-                    .endsWith(".pdf")
-            ) {
-
-                icon.textContent = "📄";
-
-            } else {
-
-                icon.textContent = "🖼️";
-
-            }
-
-
-            /* ============================
-               FILE INFORMATION
-            ============================ */
-
-            const info =
-                document.createElement(
-                    "div"
-                );
-
-            info.className =
-                "file-info";
-
-
-            const name =
-                document.createElement(
-                    "div"
-                );
-
-            name.className =
-                "file-name";
-
-            name.textContent =
-                file.name;
-
-
-            const size =
-                document.createElement(
-                    "div"
-                );
-
-            size.className =
-                "file-size";
-
-            size.textContent =
-                formatFileSize(
-                    file.size
-                );
-
-
-            info.appendChild(name);
-
-            info.appendChild(size);
-
-
-            /* ============================
-               ACTION BUTTONS
-            ============================ */
-
-            const actions =
-                document.createElement(
-                    "div"
-                );
-
-            actions.className =
-                "file-actions";
-
-
-            /* MOVE UP */
-
-            const upBtn =
-                document.createElement(
-                    "button"
-                );
-
-            upBtn.className =
-                "file-action-btn";
-
-            upBtn.innerHTML = "↑";
-
-            upBtn.title =
-                "Move up";
-
-
-            upBtn.addEventListener(
-                "click",
-                function () {
-
-                    moveFile(
-                        index,
-                        -1
-                    );
-
-                }
-            );
-
-
-            /* MOVE DOWN */
-
-            const downBtn =
-                document.createElement(
-                    "button"
-                );
-
-            downBtn.className =
-                "file-action-btn";
-
-            downBtn.innerHTML = "↓";
-
-            downBtn.title =
-                "Move down";
-
-
-            downBtn.addEventListener(
-                "click",
-                function () {
-
-                    moveFile(
-                        index,
-                        1
-                    );
-
-                }
-            );
-
-
-            /* REMOVE */
-
-            const removeBtn =
-                document.createElement(
-                    "button"
-                );
-
-            removeBtn.className =
-                "file-action-btn remove-btn";
-
-            removeBtn.innerHTML =
-                "✕";
-
-            removeBtn.title =
-                "Remove file";
-
-
-            removeBtn.addEventListener(
-                "click",
-                function () {
-
-                    removeFile(index);
-
-                }
-            );
-
-
-            actions.appendChild(upBtn);
-
-            actions.appendChild(downBtn);
-
-            actions.appendChild(removeBtn);
-
-
-            /* ============================
-               ADD TO FILE ITEM
-            ============================ */
-
-            fileItem.appendChild(
-                number
-            );
-
-            fileItem.appendChild(
-                icon
-            );
-
-            fileItem.appendChild(
-                info
-            );
-
-            fileItem.appendChild(
-                actions
-            );
-
-
-            fileList.appendChild(
-                fileItem
-            );
-
-        }
-    );
-
-
-    updateUI();
-
-}
-
-
-/* =========================================================
-   MOVE FILE
-========================================================= */
-
-function moveFile(
-    index,
-    direction
-) {
-
-    const newIndex =
-        index + direction;
-
-
-    if (
-        newIndex < 0 ||
-        newIndex >= files.length
-    ) {
+        fileList.innerHTML = `
+            <div class="empty-files">
+                No files selected
+            </div>
+        `;
 
         return;
 
     }
 
 
-    const temp =
-        files[index];
+    selectedFiles.forEach((file, index) => {
+
+        const fileItem =
+            document.createElement("div");
+
+        fileItem.className = "file-item";
 
 
-    files[index] =
-        files[newIndex];
+        const extension =
+            file.name.split(".").pop().toUpperCase();
 
 
-    files[newIndex] =
+        fileItem.innerHTML = `
+
+            <div class="file-info">
+
+                <div class="file-number">
+                    ${index + 1}
+                </div>
+
+                <div class="file-icon">
+                    ${extension === "PDF" ? "📄" : "🖼️"}
+                </div>
+
+                <div class="file-details">
+
+                    <div class="file-name">
+                        ${escapeHtml(file.name)}
+                    </div>
+
+                    <div class="file-size">
+                        ${formatFileSize(file.size)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="file-actions">
+
+                <button
+                    class="move-up"
+                    onclick="moveFileUp(${index})"
+                    ${index === 0 ? "disabled" : ""}
+                >
+                    ↑
+                </button>
+
+
+                <button
+                    class="move-down"
+                    onclick="moveFileDown(${index})"
+                    ${index === selectedFiles.length - 1
+                        ? "disabled"
+                        : ""}
+                >
+                    ↓
+                </button>
+
+
+                <button
+                    class="remove-file"
+                    onclick="removeFile(${index})"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+        `;
+
+
+        fileList.appendChild(fileItem);
+
+    });
+
+}
+
+
+// ============================================================
+// MOVE FILE UP
+// ============================================================
+
+function moveFileUp(index) {
+
+    if (index <= 0) return;
+
+
+    const temp = selectedFiles[index];
+
+    selectedFiles[index] =
+        selectedFiles[index - 1];
+
+    selectedFiles[index - 1] =
         temp;
 
 
-    renderFileList();
+    updateFileList();
 
 }
 
 
-/* =========================================================
-   REMOVE FILE
-========================================================= */
+// ============================================================
+// MOVE FILE DOWN
+// ============================================================
+
+function moveFileDown(index) {
+
+    if (index >= selectedFiles.length - 1) return;
+
+
+    const temp = selectedFiles[index];
+
+    selectedFiles[index] =
+        selectedFiles[index + 1];
+
+    selectedFiles[index + 1] =
+        temp;
+
+
+    updateFileList();
+
+}
+
+
+// ============================================================
+// REMOVE FILE
+// ============================================================
 
 function removeFile(index) {
 
-    files.splice(
-        index,
-        1
-    );
+    selectedFiles.splice(index, 1);
 
-
-    renderFileList();
-
-
-    /*
-       Previous merged PDF is no longer
-       valid because file list changed.
-    */
-
-    clearMergedFile();
-
-
-    showMessage(
-        "File removed.",
-        "success"
-    );
+    updateFileList();
 
 }
 
 
-/* =========================================================
-   CLEAR ALL
-========================================================= */
+// ============================================================
+// CLEAR ALL FILES
+// ============================================================
 
-clearBtn.addEventListener(
-    "click",
-    function () {
+if (clearBtn) {
 
-        if (
-            files.length === 0
-        ) {
+    clearBtn.addEventListener("click", async () => {
+
+        selectedFiles = [];
+
+        mergedFileBlob = null;
+
+
+        if (mergedFileUrl) {
+
+            URL.revokeObjectURL(mergedFileUrl);
+
+            mergedFileUrl = null;
+
+        }
+
+
+        updateFileList();
+
+        hideMergedFileArea();
+
+        hideMessage();
+
+
+        // Tell FastAPI to clear temporary files
+        await clearServerFiles();
+
+    });
+
+}
+
+
+// ============================================================
+// MERGE PDF API
+// ============================================================
+
+if (mergeBtn) {
+
+    mergeBtn.addEventListener("click", async () => {
+
+        await mergeFiles();
+
+    });
+
+}
+
+
+// ============================================================
+// MERGE FILES
+// ============================================================
+
+async function mergeFiles() {
+
+    if (selectedFiles.length < 2) {
+
+        showError(
+            "Please select at least 2 files to merge."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        mergeBtn.disabled = true;
+
+        mergeBtn.textContent = "Merging...";
+
+
+        hideMessage();
+
+
+        // ====================================================
+        // CREATE FORM DATA
+        // ====================================================
+
+        const formData = new FormData();
+
+
+        // IMPORTANT:
+        // Every file uses the same field name "files"
+
+        selectedFiles.forEach(file => {
+
+            formData.append(
+                "files",
+                file,
+                file.name
+            );
+
+        });
+
+
+        // ====================================================
+        // CALL FASTAPI
+        // ====================================================
+
+        const response = await fetch(
+            API.MERGE,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+
+        // ====================================================
+        // CHECK RESPONSE
+        // ====================================================
+
+        if (!response.ok) {
+
+            let errorMessage =
+                "Failed to merge files.";
+
+            try {
+
+                const errorData =
+                    await response.json();
+
+                if (errorData.detail) {
+
+                    errorMessage =
+                        errorData.detail;
+
+                }
+
+            } catch {
+
+                // Response was not JSON
+            }
+
+
+            throw new Error(errorMessage);
+
+        }
+
+
+        // ====================================================
+        // GET MERGED PDF
+        // ====================================================
+
+        mergedFileBlob =
+            await response.blob();
+
+
+        // ====================================================
+        // CREATE BROWSER URL
+        // ====================================================
+
+        if (mergedFileUrl) {
+
+            URL.revokeObjectURL(
+                mergedFileUrl
+            );
+
+        }
+
+
+        mergedFileUrl =
+            URL.createObjectURL(
+                mergedFileBlob
+            );
+
+
+        // ====================================================
+        // SHOW RESULT
+        // ====================================================
+
+        showMergedFileArea();
+
+
+        showSuccess(
+            "Files merged successfully!"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Merge error:",
+            error
+        );
+
+
+        showError(
+            error.message ||
+            "Unable to merge files."
+        );
+
+
+    } finally {
+
+        mergeBtn.disabled = false;
+
+        mergeBtn.textContent = "Merge Files";
+
+    }
+
+}
+
+
+// ============================================================
+// VIEW MERGED PDF
+// ============================================================
+
+if (viewMergedBtn) {
+
+    viewMergedBtn.addEventListener("click", () => {
+
+        if (!mergedFileUrl) {
+
+            showError(
+                "No merged PDF available."
+            );
 
             return;
 
         }
 
 
-        files = [];
+        window.open(
+            mergedFileUrl,
+            "_blank"
+        );
+
+    });
+
+}
 
 
-        renderFileList();
+// ============================================================
+// DOWNLOAD MERGED PDF
+// ============================================================
+
+if (downloadBtn) {
+
+    downloadBtn.addEventListener("click", () => {
+
+        if (!mergedFileUrl) {
+
+            showError(
+                "No merged PDF available."
+            );
+
+            return;
+
+        }
 
 
-        clearMergedFile();
+        const link =
+            document.createElement("a");
 
 
-        showMessage(
-            "All files have been cleared.",
-            "success"
+        link.href =
+            mergedFileUrl;
+
+
+        link.download =
+            mergedFileName;
+
+
+        document.body.appendChild(link);
+
+
+        link.click();
+
+
+        document.body.removeChild(link);
+
+    });
+
+}
+
+
+// ============================================================
+// GET SERVER FILES API
+// ============================================================
+
+async function getServerFiles() {
+
+    try {
+
+        const response =
+            await fetch(API.FILES);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to get server files."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Server files:",
+            data
+        );
+
+
+        return data;
+
+
+    } catch (error) {
+
+        console.error(
+            "Files API error:",
+            error
+        );
+
+
+        return null;
+
+    }
+
+}
+
+
+// ============================================================
+// VIEW SERVER FILE
+// ============================================================
+
+async function viewServerFile(filename) {
+
+    try {
+
+        const url =
+            `${API.FILES}/${encodeURIComponent(filename)}`;
+
+
+        window.open(
+            url,
+            "_blank"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "View file error:",
+            error
         );
 
     }
-);
+
+}
 
 
-/* =========================================================
-   CLEAR MERGED FILE
-========================================================= */
+// ============================================================
+// DELETE SERVER FILE
+// ============================================================
 
-function clearMergedFile() {
+async function deleteServerFile(filename) {
 
-    mergedPdfBlob = null;
+    try {
+
+        const url =
+            `${API.FILES}/${encodeURIComponent(filename)}`;
 
 
-    if (mergedPdfUrl) {
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "DELETE"
+                }
+            );
 
-        URL.revokeObjectURL(
-            mergedPdfUrl
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to delete file."
+            );
+
+        }
+
+
+        showSuccess(
+            "File deleted successfully."
         );
 
-        mergedPdfUrl = null;
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            "Delete API error:",
+            error
+        );
+
+
+        showError(
+            error.message
+        );
+
+
+        return false;
 
     }
 
+}
 
-    mergedFileArea.classList.remove(
-        "show"
+
+// ============================================================
+// CLEAR SERVER FILES API
+// ============================================================
+
+async function clearServerFiles() {
+
+    try {
+
+        const response =
+            await fetch(
+                API.CLEAR,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            console.warn(
+                "Server clear failed."
+            );
+
+            return false;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Server cleared:",
+            data
+        );
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            "Clear API error:",
+            error
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+// ============================================================
+// HEALTH CHECK API
+// ============================================================
+
+async function checkBackendHealth() {
+
+    try {
+
+        const response =
+            await fetch(
+                API.HEALTH
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Backend is offline."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "FastAPI status:",
+            data
+        );
+
+
+        updateSystemStatus(
+            true
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Health check failed:",
+            error
+        );
+
+
+        updateSystemStatus(
+            false
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// SYSTEM STATUS
+// ============================================================
+
+function updateSystemStatus(isOnline) {
+
+    const statusElement =
+        document.querySelector(
+            ".system-status"
+        );
+
+
+    if (!statusElement) return;
+
+
+    if (isOnline) {
+
+        statusElement.textContent =
+            "System Online";
+
+        statusElement.classList.remove(
+            "offline"
+        );
+
+        statusElement.classList.add(
+            "online"
+        );
+
+    } else {
+
+        statusElement.textContent =
+            "Backend Offline";
+
+        statusElement.classList.remove(
+            "online"
+        );
+
+        statusElement.classList.add(
+            "offline"
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// SHOW MERGED FILE AREA
+// ============================================================
+
+function showMergedFileArea() {
+
+    if (mergedFileArea) {
+
+        mergedFileArea.style.display =
+            "block";
+
+    }
+
+}
+
+
+// ============================================================
+// HIDE MERGED FILE AREA
+// ============================================================
+
+function hideMergedFileArea() {
+
+    if (mergedFileArea) {
+
+        mergedFileArea.style.display =
+            "none";
+
+    }
+
+}
+
+
+// ============================================================
+// SUCCESS MESSAGE
+// ============================================================
+
+function showSuccess(message) {
+
+    if (!successMessage) return;
+
+
+    successMessage.textContent =
+        message;
+
+
+    successMessage.style.display =
+        "block";
+
+
+    successMessage.classList.remove(
+        "error"
+    );
+
+
+    successMessage.classList.add(
+        "success"
     );
 
 }
 
 
-/* =========================================================
-   UPDATE UI
-========================================================= */
+// ============================================================
+// ERROR MESSAGE
+// ============================================================
 
-function updateUI() {
+function showError(message) {
 
-    fileCount.textContent =
-        files.length;
+    if (!successMessage) {
+
+        alert(message);
+
+        return;
+
+    }
 
 
-    /*
-       Require minimum 2 files
-       for merging.
-    */
+    successMessage.textContent =
+        message;
 
-    if (files.length >= 2) {
 
-        mergeBtn.disabled =
-            false;
+    successMessage.style.display =
+        "block";
 
-    } else {
 
-        mergeBtn.disabled =
-            true;
+    successMessage.classList.remove(
+        "success"
+    );
+
+
+    successMessage.classList.add(
+        "error"
+    );
+
+}
+
+
+// ============================================================
+// HIDE MESSAGE
+// ============================================================
+
+function hideMessage() {
+
+    if (successMessage) {
+
+        successMessage.style.display =
+            "none";
 
     }
 
 }
 
 
-/* =========================================================
-   FORMAT FILE SIZE
-========================================================= */
+// ============================================================
+// FORMAT FILE SIZE
+// ============================================================
 
 function formatFileSize(bytes) {
 
@@ -686,12 +1097,10 @@ function formatFileSize(bytes) {
 
 
     const units = [
-
         "Bytes",
         "KB",
         "MB",
         "GB"
-
     ];
 
 
@@ -703,385 +1112,53 @@ function formatFileSize(bytes) {
 
 
     return (
-        parseFloat(
-            (
-                bytes /
-                Math.pow(
-                    1024,
-                    index
-                )
-            ).toFixed(2)
-        )
-        +
-        " "
-        +
-        units[index]
-    );
+        bytes /
+        Math.pow(1024, index)
+    ).toFixed(2) +
+    " " +
+    units[index];
 
 }
 
 
-/* =========================================================
-   SUCCESS / ERROR MESSAGE
-========================================================= */
+// ============================================================
+// ESCAPE HTML
+// ============================================================
 
-function showMessage(
-    message,
-    type = "success"
-) {
+function escapeHtml(text) {
 
-    successText.textContent =
-        message;
+    const div =
+        document.createElement("div");
 
 
-    successMessage.classList.add(
-        "show"
-    );
+    div.textContent =
+        text;
 
 
-    if (
-        type === "error"
-    ) {
-
-        successMessage.style.background =
-            "#fef2f2";
-
-        successMessage.style.color =
-            "#b91c1c";
-
-        successMessage.style.borderColor =
-            "#fecaca";
-
-    } else {
-
-        successMessage.style.background =
-            "#ecfdf5";
-
-        successMessage.style.color =
-            "#047857";
-
-        successMessage.style.borderColor =
-            "#a7f3d0";
-
-    }
-
-
-    setTimeout(
-        function () {
-
-            successMessage.classList.remove(
-                "show"
-            );
-
-        },
-        3500
-    );
+    return div.innerHTML;
 
 }
 
 
-/* =========================================================
-   MERGE FILES USING FASTAPI
-========================================================= */
+// ============================================================
+// MAKE FUNCTIONS AVAILABLE TO HTML
+// ============================================================
 
-mergeBtn.addEventListener(
-    "click",
-    async function () {
+window.moveFileUp =
+    moveFileUp;
 
-        if (files.length < 2) {
+window.moveFileDown =
+    moveFileDown;
 
-            showMessage(
-                "Please add at least two files.",
-                "error"
-            );
+window.removeFile =
+    removeFile;
 
-            return;
+window.viewServerFile =
+    viewServerFile;
 
-        }
+window.deleteServerFile =
+    deleteServerFile;
 
-
-        /*
-           Disable button while API
-           is processing files.
-        */
-
-        mergeBtn.disabled =
-            true;
-
-
-        mergeBtn.querySelector(
-            "span"
-        ).textContent =
-            "Merging...";
-
-
-        try {
-
-            /*
-               FormData is used to send
-               files to FastAPI.
-            */
-
-            const formData =
-                new FormData();
-
-
-            /*
-               Add files in the EXACT
-               order shown in the UI.
-
-               FastAPI receives them
-               in this order.
-            */
-
-            files.forEach(
-                function (file) {
-
-                    formData.append(
-                        "files",
-                        file
-                    );
-
-                }
-            );
-
-
-            /*
-               Send files to FastAPI.
-            */
-
-            const response =
-                await fetch(
-                    API_URL,
-                    {
-                        method: "POST",
-
-                        body: formData
-                    }
-                );
-
-
-            /*
-               Check HTTP status.
-            */
-
-            if (!response.ok) {
-
-                let errorMessage =
-                    "Unable to merge files.";
-
-                try {
-
-                    const errorData =
-                        await response.json();
-
-                    if (
-                        errorData.detail
-                    ) {
-
-                        errorMessage =
-                            errorData.detail;
-
-                    }
-
-                } catch (error) {
-
-                    console.log(
-                        "Error response was not JSON."
-                    );
-
-                }
-
-
-                throw new Error(
-                    errorMessage
-                );
-
-            }
-
-
-            /*
-               FastAPI returns the
-               merged PDF as Blob.
-            */
-
-            const blob =
-                await response.blob();
-
-
-            if (
-                blob.size === 0
-            ) {
-
-                throw new Error(
-                    "The server returned an empty PDF."
-                );
-
-            }
-
-
-            /*
-               Store merged PDF.
-            */
-
-            mergedPdfBlob =
-                blob;
-
-
-            /*
-               Create browser URL.
-            */
-
-            if (mergedPdfUrl) {
-
-                URL.revokeObjectURL(
-                    mergedPdfUrl
-                );
-
-            }
-
-
-            mergedPdfUrl =
-                URL.createObjectURL(
-                    mergedPdfBlob
-                );
-
-
-            /*
-               Display "Merged PDF Ready".
-            */
-
-            mergedFileArea.classList.add(
-                "show"
-            );
-
-
-            showMessage(
-                "PDF merged successfully!",
-                "success"
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "FastAPI merge error:",
-                error
-            );
-
-
-            showMessage(
-                error.message ||
-                "Unable to connect to FastAPI.",
-                "error"
-            );
-
-        }
-
-
-        /*
-           Restore merge button.
-        */
-
-        mergeBtn.disabled =
-            files.length < 2;
-
-
-        mergeBtn.querySelector(
-            "span"
-        ).textContent =
-            "Merge Files";
-
-    }
-);
-
-
-/* =========================================================
-   VIEW MERGED PDF
-========================================================= */
-
-viewMergedBtn.addEventListener(
-    "click",
-    function () {
-
-        if (!mergedPdfUrl) {
-
-            showMessage(
-                "Please merge the files first.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        /*
-           Open merged PDF
-           in a new browser tab.
-        */
-
-        window.open(
-            mergedPdfUrl,
-            "_blank"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   DOWNLOAD MERGED PDF
-========================================================= */
-
-downloadBtn.addEventListener(
-    "click",
-    function () {
-
-        if (!mergedPdfUrl) {
-
-            showMessage(
-                "Please merge the files first.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        const link =
-            document.createElement(
-                "a"
-            );
-
-
-        link.href =
-            mergedPdfUrl;
-
-
-        link.download =
-            "PragyanAI-Merged.pdf";
-
-
-        document.body.appendChild(
-            link
-        );
-
-
-        link.click();
-
-
-        document.body.removeChild(
-            link
-        );
-
-    }
-);
-
-
-/* =========================================================
-   INITIAL UI
-========================================================= */
-
-updateUI();
+window.getServerFiles =
+    getServerFiles;
+```
