@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,27 +6,40 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="description"
-          content="PragyanAI PDF Merger - Upload, Arrange, Merge and Download PDF files">
+    <meta
+        name="description"
+        content="PragyanAI PDF Merger - Upload, Arrange, Merge and Download PDF files"
+    >
 
     <title>PragyanAI PDF Merger</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
+
 <body>
 
-<!-- ================= HEADER ================= -->
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
 <header class="header">
 
     <div class="container">
 
-        <h1>PragyanAI PDF Merger</h1>
+        <h1>
+            PragyanAI PDF Merger
+        </h1>
 
         <p>
             Upload, Arrange, Merge and Download PDF Files
@@ -40,12 +54,17 @@
 </header>
 
 
-<!-- ================= MAIN ================= -->
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
 <main class="container main-content">
 
 
-    <!-- ================= UPLOAD ================= -->
+    <!-- =================================================
+         STEP 1 : UPLOAD
+    ================================================== -->
 
     <section class="card">
 
@@ -56,57 +75,109 @@
             </div>
 
             <div>
-                <h2>Upload PDF Files</h2>
+
+                <h2>
+                    Upload PDF Files
+                </h2>
 
                 <p>
-                    Select two or more PDF files to merge.
+                    Add two or more PDF files to merge.
                 </p>
+
             </div>
 
         </div>
 
 
-        <label for="pdfFiles">
-            Select PDF Files
-        </label>
+
+        <!-- ===============================
+             PLUS UPLOAD BOX
+        ================================ -->
+
+        <div class="upload-area">
 
 
-        <!-- MULTIPLE PDF UPLOAD -->
+            <!-- Hidden file input -->
 
-        <input
-            type="file"
-            id="pdfFiles"
-            accept=".pdf,application/pdf"
-            multiple
-        >
-
-
-        <p class="file-help">
-            You can select 2, 3, 4, 5 or more PDF files.
-        </p>
+            <input
+                type="file"
+                id="pdfFiles"
+                accept=".pdf,application/pdf"
+                multiple
+                hidden
+            >
 
 
-        <button
-            type="button"
-            id="uploadButton"
-            class="primary-button"
-        >
-            📁 Add PDF Files
-        </button>
+            <!-- PLUS BUTTON -->
 
+            <label
+                for="pdfFiles"
+                class="plus-upload-button"
+            >
+
+                <span class="plus-icon">
+                    +
+                </span>
+
+                <span class="plus-text">
+                    Add PDF Files
+                </span>
+
+                <span class="plus-help">
+                    Click to select PDF files
+                </span>
+
+            </label>
+
+
+        </div>
+
+
+
+        <!-- ===============================
+             UPLOAD INFORMATION
+        ================================ -->
+
+        <div class="upload-info">
+
+            <p>
+                📄 You can add multiple PDF files.
+            </p>
+
+            <p>
+                ➕ Click the <strong>+</strong> button again
+                to add more PDF files.
+            </p>
+
+            <p>
+                📑 Supported format: PDF
+            </p>
+
+        </div>
+
+
+
+        <!-- ===============================
+             FILE COUNT
+        ================================ -->
 
         <div
             id="uploadMessage"
-            class="message">
+            class="message"
+        >
         </div>
+
 
     </section>
 
 
 
-    <!-- ================= FILE LIST ================= -->
+    <!-- =================================================
+         STEP 2 : FILE LIST
+    ================================================== -->
 
     <section class="card">
+
 
         <div class="section-header">
 
@@ -129,10 +200,13 @@
         </div>
 
 
+
         <div class="file-layout">
 
 
-            <!-- ================= FILE LIST ================= -->
+            <!-- ===============================
+                 FILE LIST
+            ================================ -->
 
             <div class="file-list-container">
 
@@ -146,9 +220,11 @@
                 </p>
 
 
+
                 <div
                     id="fileList"
-                    class="file-list">
+                    class="file-list"
+                >
 
                     <div class="empty-state">
 
@@ -160,15 +236,23 @@
                             No PDF files uploaded yet.
                         </p>
 
+                        <p>
+                            Click the + button above
+                            to add files.
+                        </p>
+
                     </div>
 
                 </div>
+
 
             </div>
 
 
 
-            <!-- ================= PREVIEW ================= -->
+            <!-- ===============================
+                 PDF PREVIEW
+            ================================ -->
 
             <div class="preview-container">
 
@@ -185,20 +269,27 @@
                 <iframe
                     id="pdfPreview"
                     class="pdf-preview"
-                    title="PDF Preview">
+                    title="PDF Preview"
+                >
                 </iframe>
+
 
             </div>
 
+
         </div>
+
 
     </section>
 
 
 
-    <!-- ================= FILE CONTROLS ================= -->
+    <!-- =================================================
+         STEP 3 : ARRANGE FILES
+    ================================================== -->
 
     <section class="card">
+
 
         <div class="section-header">
 
@@ -213,12 +304,13 @@
                 </h2>
 
                 <p>
-                    Select a PDF and change its position.
+                    Select a file and change its position.
                 </p>
 
             </div>
 
         </div>
+
 
 
         <div class="controls">
@@ -227,51 +319,63 @@
             <button
                 type="button"
                 id="moveUpButton"
-                class="secondary-button">
+                class="secondary-button"
+            >
 
                 ⬆️ Move Up
 
             </button>
 
 
+
             <button
                 type="button"
                 id="moveDownButton"
-                class="secondary-button">
+                class="secondary-button"
+            >
 
                 ⬇️ Move Down
 
             </button>
 
 
+
             <button
                 type="button"
                 id="removeButton"
-                class="danger-button">
+                class="danger-button"
+            >
 
                 🗑️ Remove
 
             </button>
 
 
+
             <button
                 type="button"
                 id="clearButton"
-                class="danger-button">
+                class="danger-button"
+            >
 
                 ❌ Clear All
 
             </button>
 
+
         </div>
+
 
     </section>
 
 
 
-    <!-- ================= MERGE ================= -->
+    <!-- =================================================
+         STEP 4 : MERGE
+    ================================================== -->
 
     <section class="card">
+
 
         <div class="section-header">
 
@@ -294,31 +398,40 @@
         </div>
 
 
+
         <button
             type="button"
             id="mergeButton"
-            class="merge-button">
+            class="merge-button"
+        >
 
             🔗 Merge PDF Files
 
         </button>
 
 
+
         <div
             id="mergeMessage"
-            class="message">
+            class="message"
+        >
         </div>
 
 
-        <!-- DOWNLOAD -->
+
+        <!-- ===============================
+             DOWNLOAD
+        ================================ -->
 
         <div
             id="downloadContainer"
-            class="download-container hidden">
+            class="download-container hidden"
+        >
 
             <h3>
                 ✅ PDF Successfully Merged
             </h3>
+
 
             <p>
                 Your merged PDF is ready.
@@ -329,7 +442,8 @@
                 id="downloadButton"
                 class="download-button"
                 href="#"
-                download="merged.pdf">
+                download="merged.pdf"
+            >
 
                 ⬇️ Download Merged PDF
 
@@ -337,13 +451,17 @@
 
         </div>
 
+
     </section>
 
 
 
-    <!-- ================= API STATUS ================= -->
+    <!-- =================================================
+         STEP 5 : API STATUS
+    ================================================== -->
 
     <section class="card">
+
 
         <div class="section-header">
 
@@ -366,7 +484,9 @@
         </div>
 
 
+
         <div class="status-card">
+
 
             <div>
 
@@ -374,41 +494,52 @@
                     Backend API Status
                 </h3>
 
+
                 <p id="apiStatus">
                     Checking backend...
                 </p>
 
+
             </div>
+
 
 
             <span
                 id="statusIndicator"
-                class="status-indicator checking">
+                class="status-indicator checking"
+            >
 
                 ●
 
             </span>
 
+
         </div>
+
 
 
         <a
             id="swaggerLink"
             class="docs-button"
             href="http://127.0.0.1:8000/docs"
-            target="_blank">
+            target="_blank"
+        >
 
             📘 Open Swagger API Documentation
 
         </a>
 
+
     </section>
 
 
 
-    <!-- ================= TECHNOLOGY ================= -->
+    <!-- =================================================
+         STEP 6 : TECHNOLOGY
+    ================================================== -->
 
     <section class="card">
+
 
         <div class="section-header">
 
@@ -431,6 +562,7 @@
         </div>
 
 
+
         <div class="technology-grid">
 
 
@@ -447,6 +579,7 @@
             </div>
 
 
+
             <div class="technology-item">
 
                 <strong>
@@ -458,6 +591,7 @@
                 </span>
 
             </div>
+
 
 
             <div class="technology-item">
@@ -473,6 +607,7 @@
             </div>
 
 
+
             <div class="technology-item">
 
                 <strong>
@@ -484,6 +619,7 @@
                 </span>
 
             </div>
+
 
 
             <div class="technology-item">
@@ -499,6 +635,7 @@
             </div>
 
 
+
             <div class="technology-item">
 
                 <strong>
@@ -511,33 +648,44 @@
 
             </div>
 
+
         </div>
 
+
     </section>
+
 
 </main>
 
 
 
-<!-- ================= FOOTER ================= -->
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer class="footer">
 
+
     <div class="container">
+
 
         <strong>
             PragyanAI
         </strong>
 
+
         <p>
             PDF Merger
         </p>
+
 
         <p>
             Built with HTML, CSS, JavaScript, FastAPI and PyPDF
         </p>
 
+
     </div>
+
 
 </footer>
 
@@ -545,6 +693,8 @@
 
 <script src="script.js"></script>
 
+
 </body>
 
 </html>
+```
