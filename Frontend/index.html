@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,12 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <meta
-        name="description"
-        content="PragyanAI PDF Merger - Upload, Arrange, Merge and Download PDF files"
-    >
-
-    <title>PragyanAI PDF Merger</title>
+    <title>
+        PragyanAI PDF Studio
+    </title>
 
     <link
         rel="stylesheet"
@@ -29,219 +25,238 @@
 <body>
 
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+<!-- ======================================
+     SIDEBAR
+======================================= -->
 
-<header class="header">
+<aside class="sidebar">
 
-    <div class="container">
 
-        <h1>
-            PragyanAI PDF Merger
-        </h1>
+    <div class="brand">
 
-        <p>
-            Upload, Arrange, Merge and Download PDF Files
-        </p>
+        <div class="brand-logo">
+            P
+        </div>
 
-        <span class="technology-badge">
-            HTML + CSS + JavaScript + FastAPI + PyPDF
-        </span>
+
+        <div>
+
+            <h2>
+                PragyanAI
+            </h2>
+
+            <span>
+                PDF Studio
+            </span>
+
+        </div>
 
     </div>
 
-</header>
+
+    <nav>
+
+        <a
+            href="#"
+            class="nav-item active"
+        >
+
+            <span>
+                📄
+            </span>
+
+            PDF Merger
+
+        </a>
+
+
+        <a
+            href="#"
+            class="nav-item"
+        >
+
+            <span>
+                🖼️
+            </span>
+
+            Image Merger
+
+        </a>
+
+
+        <a
+            href="#"
+            class="nav-item"
+        >
+
+            <span>
+                ⚡
+            </span>
+
+            Quick Tools
+
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div>
+            Version 2.0
+        </div>
+
+        <div>
+            Made with ❤️ by PragyanAI
+        </div>
+
+    </div>
+
+
+</aside>
 
 
 
-<!-- =====================================================
+<!-- ======================================
      MAIN
-===================================================== -->
+======================================= -->
 
-<main class="container main-content">
+<main class="main">
 
 
-    <!-- =================================================
-         STEP 1 : UPLOAD
-    ================================================== -->
+    <!-- HEADER -->
 
-    <section class="card">
+    <header class="header">
 
-        <div class="section-header">
 
-            <div class="section-number">
-                1
-            </div>
+        <div>
 
-            <div>
+            <div class="breadcrumb">
 
-                <h2>
-                    Upload PDF Files
-                </h2>
-
-                <p>
-                    Add two or more PDF files to merge.
-                </p>
+                Workspace / PDF Merger
 
             </div>
 
-        </div>
 
-
-
-        <!-- ===============================
-             PLUS UPLOAD BOX
-        ================================ -->
-
-        <div class="upload-area">
-
-
-            <!-- Hidden file input -->
-
-            <input
-                type="file"
-                id="pdfFiles"
-                accept=".pdf,application/pdf"
-                multiple
-                hidden
-            >
-
-
-            <!-- PLUS BUTTON -->
-
-            <label
-                for="pdfFiles"
-                class="plus-upload-button"
-            >
-
-                <span class="plus-icon">
-                    +
-                </span>
-
-                <span class="plus-text">
-                    Add PDF Files
-                </span>
-
-                <span class="plus-help">
-                    Click to select PDF files
-                </span>
-
-            </label>
-
+            <h1>
+                PDF Merger
+            </h1>
 
         </div>
 
 
+        <div class="header-right">
 
-        <!-- ===============================
-             UPLOAD INFORMATION
-        ================================ -->
+            <span class="status-dot"></span>
 
-        <div class="upload-info">
+            <span>
+                System Online
+            </span>
+
+        </div>
+
+
+    </header>
+
+
+
+    <!-- ==================================
+         CONTENT
+    =================================== -->
+
+    <section class="content">
+
+
+        <!-- HERO -->
+
+        <div class="hero">
+
+
+            <span class="badge">
+
+                ✨ NEW VERSION
+
+            </span>
+
+
+            <h2>
+
+                Merge your files,
+
+                <br>
+
+                <span>
+                    beautifully.
+                </span>
+
+            </h2>
+
 
             <p>
-                📄 You can add multiple PDF files.
+
+                Combine PDF and image files
+                into one professional PDF
+                in seconds.
+
             </p>
 
-            <p>
-                ➕ Click the <strong>+</strong> button again
-                to add more PDF files.
-            </p>
-
-            <p>
-                📑 Supported format: PDF
-            </p>
 
         </div>
 
 
 
-        <!-- ===============================
-             FILE COUNT
-        ================================ -->
+        <!-- ==================================
+             SUCCESS MESSAGE
+        =================================== -->
 
         <div
-            id="uploadMessage"
-            class="message"
+            id="successMessage"
+            class="success-message"
         >
-        </div>
 
+            <span>
+                ✓
+            </span>
 
-    </section>
-
-
-
-    <!-- =================================================
-         STEP 2 : FILE LIST
-    ================================================== -->
-
-    <section class="card">
-
-
-        <div class="section-header">
-
-            <div class="section-number">
-                2
-            </div>
-
-            <div>
-
-                <h2>
-                    Uploaded PDF Files
-                </h2>
-
-                <p>
-                    View and arrange your PDF files.
-                </p>
-
-            </div>
+            <span id="successText">
+                File added successfully
+            </span>
 
         </div>
 
 
 
-        <div class="file-layout">
+        <!-- ==================================
+             MERGER CARD
+        =================================== -->
+
+        <div class="card">
 
 
-            <!-- ===============================
-                 FILE LIST
-            ================================ -->
-
-            <div class="file-list-container">
-
-                <h3>
-                    PDF Files
-                </h3>
+            <div class="card-title">
 
 
-                <p id="fileCount">
-                    0 files
-                </p>
+                <div>
+
+                    <h3>
+                        Upload Files
+                    </h3>
 
 
+                    <p>
+                        PDF, JPG, JPEG and PNG supported
+                    </p>
 
-                <div
-                    id="fileList"
-                    class="file-list"
-                >
+                </div>
 
-                    <div class="empty-state">
 
-                        <div class="empty-icon">
-                            📄
-                        </div>
+                <div class="file-count">
 
-                        <p>
-                            No PDF files uploaded yet.
-                        </p>
+                    <span id="fileCount">
+                        0
+                    </span>
 
-                        <p>
-                            Click the + button above
-                            to add files.
-                        </p>
-
-                    </div>
+                    Files
 
                 </div>
 
@@ -250,253 +265,210 @@
 
 
 
-            <!-- ===============================
-                 PDF PREVIEW
-            ================================ -->
+            <!-- DROP ZONE -->
 
-            <div class="preview-container">
+            <div
+                class="drop-zone"
+                id="dropZone"
+            >
+
+
+                <div class="upload-icon">
+
+                    ↑
+
+                </div>
+
 
                 <h3>
-                    Current File Preview
+
+                    Drag & Drop your files here
+
                 </h3>
 
 
-                <p id="currentFile">
-                    No file selected
+                <p>
+
+                    or click the button below
+
                 </p>
 
 
-                <iframe
-                    id="pdfPreview"
-                    class="pdf-preview"
-                    title="PDF Preview"
+                <button
+                    class="primary-btn"
+                    id="browseBtn"
                 >
-                </iframe>
+
+                    Choose Files
+
+                </button>
+
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    hidden
+                >
+
+
+                <small>
+
+                    Supported:
+                    PDF · JPG · JPEG · PNG
+
+                </small>
 
 
             </div>
 
 
-        </div>
 
+            <!-- ==================================
+                 FILE LIST
+            =================================== -->
 
-    </section>
-
-
-
-    <!-- =================================================
-         STEP 3 : ARRANGE FILES
-    ================================================== -->
-
-    <section class="card">
-
-
-        <div class="section-header">
-
-            <div class="section-number">
-                3
-            </div>
-
-            <div>
-
-                <h2>
-                    Arrange PDF Files
-                </h2>
-
-                <p>
-                    Select a file and change its position.
-                </p>
-
-            </div>
-
-        </div>
+            <div
+                id="fileList"
+                class="file-list"
+            ></div>
 
 
 
-        <div class="controls">
+            <!-- ==================================
+                 MERGED FILE AREA
+            =================================== -->
 
-
-            <button
-                type="button"
-                id="moveUpButton"
-                class="secondary-button"
+            <div
+                id="mergedFileArea"
+                class="merged-file-area"
             >
 
-                ⬆️ Move Up
 
-            </button>
-
+                <div class="merged-info">
 
 
-            <button
-                type="button"
-                id="moveDownButton"
-                class="secondary-button"
-            >
+                    <div class="merged-icon">
 
-                ⬇️ Move Down
+                        📄
 
-            </button>
+                    </div>
 
 
+                    <div>
 
-            <button
-                type="button"
-                id="removeButton"
-                class="danger-button"
-            >
-
-                🗑️ Remove
-
-            </button>
+                        <h3>
+                            Merged PDF Ready
+                        </h3>
 
 
+                        <p>
+                            Your PDF has been successfully created.
+                        </p>
 
-            <button
-                type="button"
-                id="clearButton"
-                class="danger-button"
-            >
-
-                ❌ Clear All
-
-            </button>
+                    </div>
 
 
-        </div>
+                </div>
 
 
-    </section>
+                <div class="merged-actions">
 
 
+                    <button
+                        class="view-merged-btn"
+                        id="viewMergedBtn"
+                    >
 
-    <!-- =================================================
-         STEP 4 : MERGE
-    ================================================== -->
+                        👁 View Merged File
 
-    <section class="card">
+                    </button>
 
 
-        <div class="section-header">
+                    <button
+                        class="download-btn"
+                        id="downloadBtn"
+                    >
 
-            <div class="section-number">
-                4
-            </div>
+                        ↓ Download
 
-            <div>
+                    </button>
 
-                <h2>
-                    Merge PDF Files
-                </h2>
 
-                <p>
-                    Merge all PDFs in the displayed order.
-                </p>
+                </div>
+
 
             </div>
 
-        </div>
 
 
+            <!-- ==================================
+                 ACTION BUTTONS
+            =================================== -->
 
-        <button
-            type="button"
-            id="mergeButton"
-            class="merge-button"
-        >
-
-            🔗 Merge PDF Files
-
-        </button>
+            <div class="actions">
 
 
+                <button
+                    class="secondary-btn"
+                    id="clearBtn"
+                >
 
-        <div
-            id="mergeMessage"
-            class="message"
-        >
-        </div>
+                    Clear All
 
-
-
-        <!-- ===============================
-             DOWNLOAD
-        ================================ -->
-
-        <div
-            id="downloadContainer"
-            class="download-container hidden"
-        >
-
-            <h3>
-                ✅ PDF Successfully Merged
-            </h3>
+                </button>
 
 
-            <p>
-                Your merged PDF is ready.
-            </p>
+                <button
+                    class="merge-btn"
+                    id="mergeBtn"
+                    disabled
+                >
 
+                    <span>
+                        Merge Files
+                    </span>
 
-            <a
-                id="downloadButton"
-                class="download-button"
-                href="#"
-                download="merged.pdf"
-            >
+                    <span>
+                        →
+                    </span>
 
-                ⬇️ Download Merged PDF
+                </button>
 
-            </a>
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =================================================
-         STEP 5 : API STATUS
-    ================================================== -->
-
-    <section class="card">
-
-
-        <div class="section-header">
-
-            <div class="section-number">
-                5
-            </div>
-
-            <div>
-
-                <h2>
-                    Backend API
-                </h2>
-
-                <p>
-                    FastAPI backend connection.
-                </p>
 
             </div>
 
+
         </div>
 
 
 
-        <div class="status-card">
+        <!-- ==================================
+             INFO CARDS
+        =================================== -->
+
+        <div class="info-grid">
 
 
-            <div>
+            <div class="info-card">
+
+
+                <div class="info-icon">
+                    🔒
+                </div>
+
 
                 <h3>
-                    Backend API Status
+                    Private
                 </h3>
 
 
-                <p id="apiStatus">
-                    Checking backend...
+                <p>
+
+                    Files are processed only
+                    for creating your merged PDF.
+
                 </p>
 
 
@@ -504,147 +476,51 @@
 
 
 
-            <span
-                id="statusIndicator"
-                class="status-indicator checking"
-            >
-
-                ●
-
-            </span>
+            <div class="info-card">
 
 
-        </div>
+                <div class="info-icon">
+                    ⚡
+                </div>
 
 
+                <h3>
+                    Fast
+                </h3>
 
-        <a
-            id="swaggerLink"
-            class="docs-button"
-            href="http://127.0.0.1:8000/docs"
-            target="_blank"
-        >
-
-            📘 Open Swagger API Documentation
-
-        </a>
-
-
-    </section>
-
-
-
-    <!-- =================================================
-         STEP 6 : TECHNOLOGY
-    ================================================== -->
-
-    <section class="card">
-
-
-        <div class="section-header">
-
-            <div class="section-number">
-                6
-            </div>
-
-            <div>
-
-                <h2>
-                    Technology Stack
-                </h2>
 
                 <p>
-                    Technologies used in this application.
+
+                    Merge multiple documents
+                    quickly with one click.
+
                 </p>
 
-            </div>
-
-        </div>
-
-
-
-        <div class="technology-grid">
-
-
-            <div class="technology-item">
-
-                <strong>
-                    Frontend
-                </strong>
-
-                <span>
-                    HTML + CSS + JavaScript
-                </span>
 
             </div>
 
 
 
-            <div class="technology-item">
-
-                <strong>
-                    Backend
-                </strong>
-
-                <span>
-                    FastAPI
-                </span>
-
-            </div>
+            <div class="info-card">
 
 
-
-            <div class="technology-item">
-
-                <strong>
-                    PDF Processing
-                </strong>
-
-                <span>
-                    PyPDF
-                </span>
-
-            </div>
+                <div class="info-icon">
+                    📄
+                </div>
 
 
-
-            <div class="technology-item">
-
-                <strong>
-                    API
-                </strong>
-
-                <span>
-                    REST API
-                </span>
-
-            </div>
+                <h3>
+                    Multiple Formats
+                </h3>
 
 
+                <p>
 
-            <div class="technology-item">
+                    Combine PDF and image files
+                    into one PDF.
 
-                <strong>
-                    Data Transfer
-                </strong>
+                </p>
 
-                <span>
-                    Multipart Form Data
-                </span>
-
-            </div>
-
-
-
-            <div class="technology-item">
-
-                <strong>
-                    Documentation
-                </strong>
-
-                <span>
-                    Swagger / OpenAPI
-                </span>
 
             </div>
 
@@ -653,48 +529,28 @@
 
 
     </section>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        © 2026 PragyanAI · PDF Studio
+
+    </footer>
 
 
 </main>
 
 
+<!-- ======================================
+     JAVASCRIPT
+======================================= -->
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
-<footer class="footer">
-
-
-    <div class="container">
-
-
-        <strong>
-            PragyanAI
-        </strong>
-
-
-        <p>
-            PDF Merger
-        </p>
-
-
-        <p>
-            Built with HTML, CSS, JavaScript, FastAPI and PyPDF
-        </p>
-
-
-    </div>
-
-
-</footer>
-
-
-
-<script src="script.js"></script>
+<script src="app.js"></script>
 
 
 </body>
 
 </html>
-```
