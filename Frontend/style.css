@@ -1,145 +1,230 @@
-```css
-/* ============================================================
-   GENERAL
-============================================================ */
+
+/* =========================================================
+   RESET
+========================================================= */
 
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
+
+/* =========================================================
+   BODY
+========================================================= */
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f9;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f3f6fa;
+
     color: #222;
+
     line-height: 1.6;
+
 }
 
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
 
 .container {
+
     width: 90%;
+
     max-width: 1000px;
+
     margin: 30px auto;
+
 }
 
 
-/* ============================================================
+/* =========================================================
    HEADER
-============================================================ */
+========================================================= */
 
 header {
+
     text-align: center;
-    margin-bottom: 25px;
+
+    margin-bottom: 30px;
+
 }
 
 
 header h1 {
-    font-size: 34px;
+
+    font-size: 38px;
+
     margin-bottom: 10px;
+
 }
 
 
 header p {
+
     color: #555;
-    margin-bottom: 15px;
+
+    font-size: 16px;
+
 }
 
 
-.info {
-    display: inline-block;
-    background: #e8f0fe;
-    color: #174ea6;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-
-/* ============================================================
+/* =========================================================
    CARD
-============================================================ */
+========================================================= */
 
 .card {
+
     background: white;
+
     padding: 25px;
+
     margin-bottom: 25px;
+
     border-radius: 12px;
 
     box-shadow:
-        0 2px 10px rgba(0, 0, 0, 0.08);
+        0 3px 12px rgba(0, 0, 0, 0.08);
+
 }
 
 
 .card h2 {
+
     margin-bottom: 10px;
+
+    color: #1e3a8a;
+
 }
 
 
 .card h3 {
+
     margin-top: 20px;
-    margin-bottom: 10px;
+
+    margin-bottom: 12px;
+
 }
 
 
 .card p {
+
     color: #555;
+
     margin-bottom: 15px;
+
 }
 
 
-/* ============================================================
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+.hidden {
+
+    display: none;
+
+}
+
+
+/* =========================================================
    FILE INPUT
-============================================================ */
+========================================================= */
 
 input[type="file"] {
+
     width: 100%;
-    padding: 15px;
 
-    border: 2px dashed #aaa;
-    border-radius: 8px;
+    padding: 18px;
 
-    background: #fafafa;
+    border: 2px dashed #2563eb;
+
+    border-radius: 10px;
+
+    background: #f8fbff;
+
     cursor: pointer;
+
+    font-size: 15px;
+
 }
 
 
-/* ============================================================
+/* =========================================================
    FILE LIST
-============================================================ */
+========================================================= */
 
 .file-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
 
-    padding: 12px;
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px;
 
     margin-bottom: 10px;
 
-    background: #f7f7f7;
+    background: #f8fafc;
 
     border: 1px solid #ddd;
 
     border-radius: 8px;
+
 }
 
 
 .file-number {
-    width: 35px;
+
+    min-width: 35px;
+
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #2563eb;
+
+    color: white;
+
+    border-radius: 50%;
+
     font-weight: bold;
+
 }
 
 
 .file-name {
+
     flex: 1;
+
     font-weight: bold;
+
+    overflow-wrap: anywhere;
+
 }
 
 
-.file-button {
+/* =========================================================
+   UP / DOWN BUTTON
+========================================================= */
+
+.order-button {
+
     border: none;
+
+    background: #e5e7eb;
 
     padding: 8px 12px;
 
@@ -147,52 +232,84 @@ input[type="file"] {
 
     cursor: pointer;
 
-    background: #e9ecef;
+    font-size: 16px;
+
 }
 
 
-.file-button:hover {
-    background: #d6d9dc;
+.order-button:hover {
+
+    background: #d1d5db;
+
 }
 
 
-.file-button:disabled {
+.order-button:disabled {
+
     opacity: 0.4;
+
     cursor: not-allowed;
+
 }
 
 
-/* ============================================================
+/* =========================================================
+   CURRENT ORDER
+========================================================= */
+
+.order-item {
+
+    padding: 12px;
+
+    margin-bottom: 8px;
+
+    background: #eff6ff;
+
+    border-left: 4px solid #2563eb;
+
+    border-radius: 5px;
+
+}
+
+
+/* =========================================================
    SELECT
-============================================================ */
+========================================================= */
 
 select {
+
     width: 100%;
 
     padding: 12px;
 
-    border: 1px solid #ccc;
+    margin-top: 8px;
+
+    border: 1px solid #bbb;
 
     border-radius: 7px;
 
     font-size: 16px;
 
     background: white;
+
 }
 
 
-/* ============================================================
+/* =========================================================
    PDF VIEWER
-============================================================ */
+========================================================= */
 
 #pdfViewer,
 #mergedPdfViewer {
+
     margin-top: 20px;
+
 }
 
 
 .pdf-page {
-    background: #eee;
+
+    background: #e5e7eb;
 
     padding: 15px;
 
@@ -201,10 +318,12 @@ select {
     border-radius: 8px;
 
     text-align: center;
+
 }
 
 
 .pdf-page canvas {
+
     max-width: 100%;
 
     height: auto;
@@ -213,26 +332,30 @@ select {
 
     box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.15);
+
 }
 
 
-.page-caption {
+.page-number {
+
     margin-top: 8px;
 
     font-weight: bold;
 
     color: #555;
+
 }
 
 
-/* ============================================================
-   BUTTONS
-============================================================ */
+/* =========================================================
+   MERGE BUTTON
+========================================================= */
 
-.primary-button {
+.merge-button {
+
     width: 100%;
 
-    padding: 14px;
+    padding: 15px;
 
     border: none;
 
@@ -242,40 +365,42 @@ select {
 
     color: white;
 
-    font-size: 17px;
+    font-size: 18px;
 
     font-weight: bold;
 
     cursor: pointer;
 
-    margin-top: 15px;
 }
 
 
-.primary-button:hover {
+.merge-button:hover {
+
     background: #1d4ed8;
+
 }
 
 
-.primary-button:disabled {
+.merge-button:disabled {
+
     background: #999;
 
     cursor: not-allowed;
+
 }
 
 
-/* ============================================================
+/* =========================================================
    DOWNLOAD BUTTON
-============================================================ */
+========================================================= */
 
 .download-button {
+
     display: block;
 
     width: 100%;
 
-    text-align: center;
-
-    padding: 14px;
+    padding: 15px;
 
     margin-top: 10px;
 
@@ -283,111 +408,123 @@ select {
 
     color: white;
 
+    text-align: center;
+
     text-decoration: none;
 
     border-radius: 8px;
 
-    font-size: 17px;
+    font-size: 18px;
 
     font-weight: bold;
+
 }
 
 
 .download-button:hover {
+
     background: #15803d;
+
 }
 
 
-/* ============================================================
-   MESSAGES
-============================================================ */
+/* =========================================================
+   SUCCESS MESSAGE
+========================================================= */
 
-.message {
-    margin-top: 15px;
+.success-message {
 
-    padding: 12px;
+    padding: 14px;
 
-    border-radius: 7px;
+    background: #dcfce7;
 
-    display: none;
+    color: #166534;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    font-weight: bold;
+
 }
 
 
-.message.error {
-    display: block;
+/* =========================================================
+   ERROR MESSAGE
+========================================================= */
+
+.error-message {
+
+    color: #b91c1c;
 
     background: #fee2e2;
 
-    color: #991b1b;
-}
-
-
-.message.success {
-    display: block;
-
-    background: #dcfce7;
-
-    color: #166534;
-}
-
-
-.success {
-    background: #dcfce7;
-
-    color: #166534;
-
     padding: 12px;
 
     border-radius: 7px;
 
-    margin-bottom: 20px;
+    margin-top: 15px;
+
 }
 
 
-/* ============================================================
+/* =========================================================
    FOOTER
-============================================================ */
+========================================================= */
 
 footer {
+
     text-align: center;
 
     color: #777;
 
-    margin: 30px 0;
+    padding: 20px;
+
 }
 
 
-/* ============================================================
-   RESPONSIVE DESIGN
-============================================================ */
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
 
 @media (max-width: 600px) {
 
     .container {
+
         width: 95%;
+
         margin: 15px auto;
+
     }
 
 
     header h1 {
-        font-size: 26px;
+
+        font-size: 28px;
+
     }
 
 
     .card {
+
         padding: 18px;
+
     }
 
 
     .file-item {
+
         flex-wrap: wrap;
+
     }
 
 
     .file-name {
-        min-width: 100%;
+
+        width: 100%;
+
         order: -1;
+
     }
 
 }
-```
