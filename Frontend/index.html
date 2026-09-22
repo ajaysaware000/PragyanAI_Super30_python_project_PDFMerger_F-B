@@ -3,66 +3,70 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>HI - PDF Merger</title>
+    <title>PDF Merger</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
     <div class="container">
 
-        <!-- HEADER -->
+        <!-- ================= HEADER ================= -->
+
         <header>
-            <h1>📄 HI - PDF Merger</h1>
+
+            <h1>📄 PDF Merger</h1>
 
             <p>
                 Upload multiple PDF files, arrange their order,
-                view them, merge them, and download the final PDF.
+                view them, merge them and download the final PDF.
             </p>
 
-            <div class="info">
-                Built with HTML + CSS + JavaScript
-            </div>
         </header>
 
 
-        <!-- SECTION 1 -->
+        <!-- ================= STEP 1 ================= -->
+
         <section class="card">
 
-            <h2>1. Upload PDF</h2>
+            <h2>1. Upload PDF Files</h2>
 
             <p>
-                Select multiple PDF files to upload.
+                Select two or more PDF files.
             </p>
 
             <input
                 type="file"
                 id="pdfInput"
-                accept=".pdf"
+                accept=".pdf,application/pdf"
                 multiple
             >
+
+            <p id="uploadMessage"></p>
 
         </section>
 
 
-        <!-- SECTION 2 -->
+        <!-- ================= STEP 2 ================= -->
+
         <section
-            class="card"
+            class="card hidden"
             id="arrangeSection"
-            style="display: none;"
         >
 
             <h2>2. Arrange File Order</h2>
 
             <p>
-                Use the ⬆️ and ⬇️ buttons to arrange
-                the PDF files before merging.
+                Use the buttons to change the PDF order.
             </p>
 
             <div id="fileList"></div>
@@ -70,77 +74,92 @@
         </section>
 
 
-        <!-- SECTION 3 -->
+        <!-- ================= STEP 3 ================= -->
+
         <section
-            class="card"
-            id="viewSection"
-            style="display: none;"
+            class="card hidden"
+            id="currentOrderSection"
         >
 
-            <h2>3. View Uploaded Files</h2>
+            <h2>3. Current File Order</h2>
 
             <p>
-                Select a PDF file to view its pages.
+                The PDFs will be merged in this order:
             </p>
+
+            <div id="currentOrder"></div>
+
+        </section>
+
+
+        <!-- ================= STEP 4 ================= -->
+
+        <section
+            class="card hidden"
+            id="viewSection"
+        >
+
+            <h2>4. View Uploaded PDF</h2>
+
+            <label for="pdfSelect">
+                Select PDF:
+            </label>
 
             <select id="pdfSelect"></select>
 
-            <h3 id="selectedFileName"></h3>
+            <h3 id="selectedPdfName"></h3>
 
             <div id="pdfViewer"></div>
 
         </section>
 
 
-        <!-- SECTION 4 -->
+        <!-- ================= STEP 5 ================= -->
+
         <section
-            class="card"
+            class="card hidden"
             id="mergeSection"
-            style="display: none;"
         >
 
-            <h2>4. Merge PDF</h2>
+            <h2>5. Merge PDF</h2>
 
             <p>
-                The PDFs will be merged according to
-                the order arranged above.
+                Click the button below to merge all PDFs
+                according to the current file order.
             </p>
-
-            <div id="mergeOrder"></div>
 
             <button
                 id="mergeButton"
-                class="primary-button"
+                class="merge-button"
             >
-                🔗 Merge PDF Files
+                🔗 Merge PDF
             </button>
 
-            <div
-                id="mergeMessage"
-                class="message"
-            ></div>
+            <p id="mergeMessage"></p>
 
         </section>
 
 
-        <!-- SECTION 5 -->
+        <!-- ================= STEP 6 ================= -->
+
         <section
-            class="card"
+            class="card hidden"
             id="resultSection"
-            style="display: none;"
         >
 
-            <h2>5. Merged PDF</h2>
+            <h2>6. Merged PDF</h2>
 
-            <div class="success">
-                ✅ Your merged PDF is ready!
+            <div class="success-message">
+                ✅ PDF files merged successfully!
             </div>
+
 
             <h3>View Merged PDF</h3>
 
             <div id="mergedPdfViewer"></div>
 
-            <h3>Download Merged PDF</h3>
+
+            <h3>Download PDF</h3>
 
             <a
                 id="downloadButton"
@@ -153,11 +172,12 @@
         </section>
 
 
-        <!-- FOOTER -->
+        <!-- ================= FOOTER ================= -->
+
         <footer>
 
             <p>
-                PragyanAI | HTML + CSS + JavaScript
+                PDF Merger | HTML + CSS + JavaScript
             </p>
 
         </footer>
@@ -165,19 +185,22 @@
     </div>
 
 
-    <!-- PDF.js -->
+    <!-- ================= PDF.JS ================= -->
+
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
     </script>
 
 
-    <!-- pdf-lib -->
+    <!-- ================= PDF-LIB ================= -->
+
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js">
     </script>
 
 
-    <!-- Your JavaScript -->
+    <!-- ================= JAVASCRIPT ================= -->
+
     <script src="script.js"></script>
 
 </body>
