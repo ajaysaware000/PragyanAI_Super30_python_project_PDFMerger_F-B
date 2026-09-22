@@ -6,7 +6,7 @@
 ```
 "cors_origins": [
     "*",
-    "https://melodious-pithivier-7033a1.netlify.app/"
+    "https://pythonpdfmerger.netlify.app/"
 ],
 
 "max_upload_size_mb": 10
