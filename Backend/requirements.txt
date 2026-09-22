@@ -1,5 +1,5 @@
-text
-fastapi
-uvicorn[standard]
-python-multipart
-pypdf
+fastapi 
+uvicorn 
+python-multipart 
+pypdf 
+Pillow
