@@ -1,468 +1,412 @@
+```python
 # ============================================================
-
-# backend/main.py
-
-# PragyanAI PDF Merger
-
+# PRAGYANAI PDF STUDIO
 # FastAPI Backend
-
 # ============================================================
 
-import json
+import io
+import os
+import uuid
+import shutil
 from pathlib import Path
-from io import BytesIO
 
 from fastapi import (
-FastAPI,
-File,
-HTTPException,
-UploadFile
+    FastAPI,
+    UploadFile,
+    File,
+    HTTPException
 )
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
 
-from pypdf import PdfReader, PdfWriter
+from fastapi.responses import (
+    StreamingResponse,
+    FileResponse
+)
 
-# ============================================================
+from pypdf import (
+    PdfReader,
+    PdfWriter
+)
 
-# APPLICATION PATH
+from PIL import Image
 
-# ============================================================
-
-BASE_DIR = Path(**file**).resolve().parent
-
-CONFIG_FILE = BASE_DIR / "config.json"
-
-# ============================================================
-
-# DEFAULT CONFIGURATION
 
 # ============================================================
+# APPLICATION CONFIGURATION
+# ============================================================
 
-DEFAULT_CONFIG = {
+APP_NAME = "PragyanAI PDF Studio"
 
-```
-"app_name":
-    "PragyanAI PDF Merger",
+VERSION = "1.0.0"
 
-"version":
-    "1.0.0",
+MAX_FILES = 20
 
-"description":
-    "PDF Merger using FastAPI and PyPDF",
+MAX_FILE_SIZE = 50 * 1024 * 1024   # 50 MB
 
-"cors_origins": [
-    "*"
-],
-
-"max_upload_size_mb":
-    10
-```
-
+ALLOWED_EXTENSIONS = {
+    ".pdf",
+    ".jpg",
+    ".jpeg",
+    ".png"
 }
 
-# ============================================================
-
-# LOAD CONFIGURATION
 
 # ============================================================
-
-def load_config():
-
-```
-"""
-Load application configuration from config.json.
-"""
-
-try:
-
-    with open(
-        CONFIG_FILE,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
-        loaded_config = json.load(file)
-
-    # ----------------------------------------------------
-    # Merge loaded configuration with defaults
-    # ----------------------------------------------------
-
-    config = {
-        **DEFAULT_CONFIG,
-        **loaded_config
-    }
-
-    return config
-
-except FileNotFoundError:
-
-    print(
-        "WARNING: config.json not found. "
-        "Using default configuration."
-    )
-
-    return DEFAULT_CONFIG
-
-except json.JSONDecodeError:
-
-    print(
-        "WARNING: config.json contains invalid JSON. "
-        "Using default configuration."
-    )
-
-    return DEFAULT_CONFIG
-```
-
-# ============================================================
-
-# APPLICATION CONFIGURATION
-
-# ============================================================
-
-config = load_config()
-
-APP_NAME = config.get(
-"app_name",
-DEFAULT_CONFIG["app_name"]
-)
-
-APP_VERSION = config.get(
-"version",
-DEFAULT_CONFIG["version"]
-)
-
-APP_DESCRIPTION = config.get(
-"description",
-DEFAULT_CONFIG["description"]
-)
-
-CORS_ORIGINS = config.get(
-"cors_origins",
-DEFAULT_CONFIG["cors_origins"]
-)
-
-MAX_UPLOAD_SIZE_MB = config.get(
-"max_upload_size_mb",
-DEFAULT_CONFIG["max_upload_size_mb"]
-)
-
-MAX_UPLOAD_SIZE = (
-MAX_UPLOAD_SIZE_MB
-* 1024
-* 1024
-)
-
-# ============================================================
-
-# FASTAPI APPLICATION
-
+# CREATE FASTAPI APPLICATION
 # ============================================================
 
 app = FastAPI(
-
-```
-title=APP_NAME,
-
-description=APP_DESCRIPTION,
-
-version=APP_VERSION,
-
-docs_url="/docs",
-
-redoc_url="/redoc"
-```
-
+    title=APP_NAME,
+    description="PDF and Image Merger API",
+    version=VERSION
 )
 
+
 # ============================================================
-
-# CORS CONFIGURATION
-
+# CORS
 # ============================================================
 
 app.add_middleware(
+    CORSMiddleware,
 
-```
-CORSMiddleware,
+    allow_origins=["*"],
 
-allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
 
-allow_credentials=False,
+    allow_methods=["*"],
 
-allow_methods=[
-    "GET",
-    "POST"
-],
-
-allow_headers=[
-    "*"
-]
-```
-
+    allow_headers=["*"]
 )
 
+
+# ============================================================
+# OUTPUT DIRECTORY
 # ============================================================
 
-# ROOT ENDPOINT
+BASE_DIR = Path(__file__).resolve().parent
 
+OUTPUT_DIR = BASE_DIR / "generated_files"
+
+OUTPUT_DIR.mkdir(
+    exist_ok=True
+)
+
+
+# ============================================================
+# ROOT API
 # ============================================================
 
 @app.get("/")
-def root():
+async def root():
 
-```
-"""
-Root API endpoint.
-
-Returns basic information about the application,
-available endpoints and documentation.
-"""
-
-return {
-
-    "success": True,
-
-    "message":
-        "PragyanAI PDF Merger API is running",
-
-    "application":
-        APP_NAME,
-
-    "version":
-        APP_VERSION,
-
-    "status":
-        "online",
-
-    "documentation": {
-
-        "swagger":
-            "/docs",
-
-        "redoc":
-            "/redoc"
-    },
-
-    "endpoints": {
-
-        "merge":
-            "POST /merge",
-
-        "health":
-            "GET /health",
-
-        "info":
-            "GET /info"
-    },
-
-    "technologies": [
-
-        "Python",
-
-        "FastAPI",
-
-        "PyPDF"
-    ]
-}
-```
-
-# ============================================================
-
-# HEALTH CHECK
-
-# ============================================================
-
-@app.get("/health")
-def health():
-
-```
-"""
-Health check endpoint.
-
-Useful for:
-- Cloud deployment
-- Monitoring
-- Testing
-- Load balancers
-"""
-
-return {
-
-    "success": True,
-
-    "status":
-        "healthy",
-
-    "service":
-        "PDF Merger API",
-
-    "version":
-        APP_VERSION,
-
-    "components": {
-
-        "fastapi":
-            "running",
-
-        "pypdf":
-            "available"
+    return {
+        "application": APP_NAME,
+        "version": VERSION,
+        "status": "running",
+        "message": "PragyanAI PDF Studio API is running"
     }
-}
-```
+
 
 # ============================================================
+# HEALTH API
+# ============================================================
 
+@app.get("/api/health")
+async def health_check():
+
+    return {
+        "status": "online",
+        "application": APP_NAME,
+        "version": VERSION
+    }
+
+
+# ============================================================
+# CHECK FILE EXTENSION
+# ============================================================
+
+def check_extension(filename: str):
+
+    extension = Path(filename).suffix.lower()
+
+    if extension not in ALLOWED_EXTENSIONS:
+
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Unsupported file type: {extension}. "
+                "Allowed types are PDF, JPG, JPEG and PNG."
+            )
+        )
+
+    return extension
+
+
+# ============================================================
+# CHECK FILE SIZE
+# ============================================================
+
+async def check_file_size(file: UploadFile):
+
+    contents = await file.read()
+
+    size = len(contents)
+
+    if size > MAX_FILE_SIZE:
+
+        raise HTTPException(
+            status_code=413,
+            detail=(
+                f"{file.filename} is too large. "
+                "Maximum file size is 50 MB."
+            )
+        )
+
+    return contents
+
+
+# ============================================================
+# CONVERT IMAGE TO PDF
+# ============================================================
+
+def image_to_pdf(image_data: bytes):
+
+    try:
+
+        image = Image.open(
+            io.BytesIO(image_data)
+        )
+
+        # Convert image to RGB
+        # Required because PDF does not support
+        # some image modes such as RGBA directly.
+
+        if image.mode in ("RGBA", "LA", "P"):
+
+            background = Image.new(
+                "RGB",
+                image.size,
+                "white"
+            )
+
+            if image.mode == "P":
+
+                image = image.convert("RGBA")
+
+            background.paste(
+                image,
+                mask=image.getchannel("A")
+                if image.mode == "RGBA"
+                else None
+            )
+
+            image = background
+
+        else:
+
+            image = image.convert("RGB")
+
+
+        # Save image as PDF in memory
+
+        pdf_buffer = io.BytesIO()
+
+        image.save(
+            pdf_buffer,
+            format="PDF",
+            resolution=100.0
+        )
+
+        pdf_buffer.seek(0)
+
+        return pdf_buffer
+
+
+    except Exception as error:
+
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unable to process image: {str(error)}"
+        )
+
+
+# ============================================================
 # MERGE PDF FILES
-
 # ============================================================
 
-@app.post("/merge")
-async def merge_pdfs(
-
-```
-files: list[UploadFile] = File(...)
-```
-
+def add_pdf_to_writer(
+    writer: PdfWriter,
+    pdf_data: bytes
 ):
 
-```
-"""
-Merge multiple PDF files into one PDF.
+    try:
 
-Request:
-    multipart/form-data
+        pdf_stream = io.BytesIO(
+            pdf_data
+        )
 
-Field name:
-    files
+        reader = PdfReader(
+            pdf_stream
+        )
 
-Response:
-    Merged PDF file
-"""
+        if reader.is_encrypted:
 
-# --------------------------------------------------------
-# Validate number of files
-# --------------------------------------------------------
+            try:
 
-if len(files) < 2:
+                reader.decrypt("")
 
-    raise HTTPException(
+            except Exception:
 
-        status_code=400,
-
-        detail=
-            "Please upload at least 2 PDF files."
-    )
+                raise HTTPException(
+                    status_code=400,
+                    detail="Password-protected PDF files are not supported."
+                )
 
 
-# --------------------------------------------------------
-# Create PDF writer
-# --------------------------------------------------------
+        for page in reader.pages:
 
-writer = PdfWriter()
+            writer.add_page(page)
 
 
-try:
+    except HTTPException:
 
-    # ----------------------------------------------------
-    # Process each uploaded PDF
-    # ----------------------------------------------------
+        raise
+
+
+    except Exception as error:
+
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid PDF file: {str(error)}"
+        )
+
+
+# ============================================================
+# MERGE API
+# ============================================================
+
+@app.post("/api/merge")
+async def merge_files(
+    files: list[UploadFile] = File(...)
+):
+
+    # --------------------------------------------------------
+    # CHECK NUMBER OF FILES
+    # --------------------------------------------------------
+
+    if len(files) < 2:
+
+        raise HTTPException(
+            status_code=400,
+            detail="Please upload at least 2 files."
+        )
+
+
+    if len(files) > MAX_FILES:
+
+        raise HTTPException(
+            status_code=400,
+            detail=f"You can upload a maximum of {MAX_FILES} files."
+        )
+
+
+    # --------------------------------------------------------
+    # CREATE PDF WRITER
+    # --------------------------------------------------------
+
+    writer = PdfWriter()
+
+
+    # --------------------------------------------------------
+    # PROCESS FILES IN UPLOAD ORDER
+    # --------------------------------------------------------
 
     for file in files:
-
-        # ------------------------------------------------
-        # Validate filename
-        # ------------------------------------------------
 
         if not file.filename:
 
             raise HTTPException(
-
                 status_code=400,
-
-                detail=
-                    "One of the uploaded files has no filename."
+                detail="A file has no filename."
             )
 
 
-        # ------------------------------------------------
-        # Validate PDF extension
-        # ------------------------------------------------
-
-        if not file.filename.lower().endswith(".pdf"):
-
-            raise HTTPException(
-
-                status_code=400,
-
-                detail=(
-                    f"{file.filename} is not a PDF file. "
-                    "Please upload only PDF files."
-                )
-            )
+        extension = check_extension(
+            file.filename
+        )
 
 
-        # ------------------------------------------------
         # Read file
-        # ------------------------------------------------
 
-        contents = await file.read()
+        file_data = await check_file_size(
+            file
+        )
 
 
-        # ------------------------------------------------
-        # Check empty file
-        # ------------------------------------------------
+        # ----------------------------------------------------
+        # PDF
+        # ----------------------------------------------------
 
-        if not contents:
+        if extension == ".pdf":
 
-            raise HTTPException(
-
-                status_code=400,
-
-                detail=(
-                    f"{file.filename} is empty."
-                )
+            add_pdf_to_writer(
+                writer,
+                file_data
             )
 
 
-        # ------------------------------------------------
-        # Check file size
-        # ------------------------------------------------
+        # ----------------------------------------------------
+        # IMAGE
+        # ----------------------------------------------------
 
-        if len(contents) > MAX_UPLOAD_SIZE:
+        elif extension in (
+            ".jpg",
+            ".jpeg",
+            ".png"
+        ):
 
-            raise HTTPException(
-
-                status_code=413,
-
-                detail=(
-                    f"{file.filename} exceeds the maximum "
-                    f"allowed size of "
-                    f"{MAX_UPLOAD_SIZE_MB} MB."
-                )
+            image_pdf = image_to_pdf(
+                file_data
             )
 
 
-        # ------------------------------------------------
-        # Read PDF
-        # ------------------------------------------------
-
-        pdf_stream = BytesIO(contents)
-
-        reader = PdfReader(pdf_stream)
+            reader = PdfReader(
+                image_pdf
+            )
 
 
-        # ------------------------------------------------
-        # Check PDF pages
-        # ------------------------------------------------
+            for page in reader.pages:
 
-        if len(reader.pages) == 0:
+                writer.add_page(page)
 
-            raise HTTPException(
 
-                status_code=400,
+    # --------------------------------------------------------
+    # CHECK RESULT
+    # --------------------------------------------------------
 
-                detail=(
-                    f"{file.filename} does not contain "
+    if len(writer.pages) == 0:
+
+        raise HTTPException(
+            status_code=400,
+            detail="No valid pages were found in the uploaded files."
+        )
+
+
+    # --------------------------------------------------------
+    # WRITE MERGED PDF TO MEMORY
+    # --------------------------------------------------------
+
+    merged_pdf = io.BytesIO()
+
+    writer.write(
+        merged_pdf
+    )
+
+    merged_pdf.seek(0)
+
+
+    # --------------------------------------------------------
+    # CREATE OUTPUT FILE
+    # -----------------------
 ```
