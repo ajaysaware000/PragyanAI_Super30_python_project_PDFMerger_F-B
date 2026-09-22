@@ -1,28 +1,24 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
-```
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="description"
-    content="PragyanAI PDF Merger - Upload, Arrange, Merge and Download PDF files"
->
+    <meta name="description"
+          content="PragyanAI PDF Merger - Upload, Arrange, Merge and Download PDF files">
 
-<title>PragyanAI PDF Merger</title>
+    <title>PragyanAI PDF Merger</title>
 
-<link rel="stylesheet" href="style.css">
-```
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-```
 <!-- ================= HEADER ================= -->
 
 <header class="header">
@@ -49,30 +45,6 @@
 <main class="container main-content">
 
 
-    <!-- ================= API STATUS ================= -->
-
-    <section class="status-card">
-
-        <div>
-
-            <h3>Backend API Status</h3>
-
-            <p id="apiStatus">
-                Checking backend...
-            </p>
-
-        </div>
-
-        <span
-            id="statusIndicator"
-            class="status-indicator checking"
-        >
-            ●
-        </span>
-
-    </section>
-
-
     <!-- ================= UPLOAD ================= -->
 
     <section class="card">
@@ -84,15 +56,11 @@
             </div>
 
             <div>
-
-                <h2>
-                    Upload PDF Files
-                </h2>
+                <h2>Upload PDF Files</h2>
 
                 <p>
                     Select two or more PDF files to merge.
                 </p>
-
             </div>
 
         </div>
@@ -102,19 +70,24 @@
             Select PDF Files
         </label>
 
+
+        <!-- MULTIPLE PDF UPLOAD -->
+
         <input
             type="file"
             id="pdfFiles"
-            accept="application/pdf"
+            accept=".pdf,application/pdf"
             multiple
         >
 
+
         <p class="file-help">
-            Supported: PDF | Multiple files allowed
+            You can select 2, 3, 4, 5 or more PDF files.
         </p>
 
 
         <button
+            type="button"
             id="uploadButton"
             class="primary-button"
         >
@@ -124,13 +97,14 @@
 
         <div
             id="uploadMessage"
-            class="message"
-        ></div>
+            class="message">
+        </div>
 
     </section>
 
 
-    <!-- ================= FILE ORDER ================= -->
+
+    <!-- ================= FILE LIST ================= -->
 
     <section class="card">
 
@@ -143,11 +117,11 @@
             <div>
 
                 <h2>
-                    Arrange PDF Files
+                    Uploaded PDF Files
                 </h2>
 
                 <p>
-                    Change the order before merging.
+                    View and arrange your PDF files.
                 </p>
 
             </div>
@@ -158,13 +132,14 @@
         <div class="file-layout">
 
 
-            <!-- FILE LIST -->
+            <!-- ================= FILE LIST ================= -->
 
             <div class="file-list-container">
 
                 <h3>
-                    Uploaded Files
+                    PDF Files
                 </h3>
+
 
                 <p id="fileCount">
                     0 files
@@ -173,12 +148,13 @@
 
                 <div
                     id="fileList"
-                    class="file-list"
-                >
+                    class="file-list">
 
                     <div class="empty-state">
 
-                        📄
+                        <div class="empty-icon">
+                            📄
+                        </div>
 
                         <p>
                             No PDF files uploaded yet.
@@ -191,13 +167,15 @@
             </div>
 
 
-            <!-- PREVIEW -->
+
+            <!-- ================= PREVIEW ================= -->
 
             <div class="preview-container">
 
                 <h3>
                     Current File Preview
                 </h3>
+
 
                 <p id="currentFile">
                     No file selected
@@ -207,8 +185,8 @@
                 <iframe
                     id="pdfPreview"
                     class="pdf-preview"
-                    title="PDF Preview"
-                ></iframe>
+                    title="PDF Preview">
+                </iframe>
 
             </div>
 
@@ -217,7 +195,8 @@
     </section>
 
 
-    <!-- ================= CONTROLS ================= -->
+
+    <!-- ================= FILE CONTROLS ================= -->
 
     <section class="card">
 
@@ -230,11 +209,11 @@
             <div>
 
                 <h2>
-                    File Controls
+                    Arrange PDF Files
                 </h2>
 
                 <p>
-                    Select a file and change its position.
+                    Select a PDF and change its position.
                 </p>
 
             </div>
@@ -244,40 +223,50 @@
 
         <div class="controls">
 
+
             <button
+                type="button"
                 id="moveUpButton"
-                class="secondary-button"
-            >
+                class="secondary-button">
+
                 ⬆️ Move Up
+
             </button>
 
 
             <button
+                type="button"
                 id="moveDownButton"
-                class="secondary-button"
-            >
+                class="secondary-button">
+
                 ⬇️ Move Down
+
             </button>
 
 
             <button
+                type="button"
                 id="removeButton"
-                class="danger-button"
-            >
+                class="danger-button">
+
                 🗑️ Remove
+
             </button>
 
 
             <button
+                type="button"
                 id="clearButton"
-                class="danger-button"
-            >
+                class="danger-button">
+
                 ❌ Clear All
+
             </button>
 
         </div>
 
     </section>
+
 
 
     <!-- ================= MERGE ================= -->
@@ -293,11 +282,11 @@
             <div>
 
                 <h2>
-                    Merge PDF
+                    Merge PDF Files
                 </h2>
 
                 <p>
-                    Merge all uploaded PDFs in the displayed order.
+                    Merge all PDFs in the displayed order.
                 </p>
 
             </div>
@@ -306,26 +295,29 @@
 
 
         <button
+            type="button"
             id="mergeButton"
-            class="merge-button"
-        >
+            class="merge-button">
+
             🔗 Merge PDF Files
+
         </button>
 
 
         <div
             id="mergeMessage"
-            class="message"
-        ></div>
+            class="message">
+        </div>
 
+
+        <!-- DOWNLOAD -->
 
         <div
             id="downloadContainer"
-            class="download-container hidden"
-        >
+            class="download-container hidden">
 
             <h3>
-                PDF Successfully Merged
+                ✅ PDF Successfully Merged
             </h3>
 
             <p>
@@ -337,9 +329,10 @@
                 id="downloadButton"
                 class="download-button"
                 href="#"
-                download="merged.pdf"
-            >
+                download="merged.pdf">
+
                 ⬇️ Download Merged PDF
+
             </a>
 
         </div>
@@ -347,7 +340,8 @@
     </section>
 
 
-    <!-- ================= API INFORMATION ================= -->
+
+    <!-- ================= API STATUS ================= -->
 
     <section class="card">
 
@@ -360,11 +354,11 @@
             <div>
 
                 <h2>
-                    API Information
+                    Backend API
                 </h2>
 
                 <p>
-                    FastAPI backend endpoints used by this website.
+                    FastAPI backend connection.
                 </p>
 
             </div>
@@ -372,75 +366,28 @@
         </div>
 
 
-        <div class="api-grid">
+        <div class="status-card">
 
+            <div>
 
-            <div class="api-item">
+                <h3>
+                    Backend API Status
+                </h3>
 
-                <span class="method get">
-                    GET
-                </span>
-
-                <code>
-                    /
-                </code>
-
-                <p>
-                    API information
+                <p id="apiStatus">
+                    Checking backend...
                 </p>
 
             </div>
 
 
-            <div class="api-item">
+            <span
+                id="statusIndicator"
+                class="status-indicator checking">
 
-                <span class="method get">
-                    GET
-                </span>
+                ●
 
-                <code>
-                    /health
-                </code>
-
-                <p>
-                    Check backend status
-                </p>
-
-            </div>
-
-
-            <div class="api-item">
-
-                <span class="method post">
-                    POST
-                </span>
-
-                <code>
-                    /merge
-                </code>
-
-                <p>
-                    Merge PDF files
-                </p>
-
-            </div>
-
-
-            <div class="api-item">
-
-                <span class="method post">
-                    POST
-                </span>
-
-                <code>
-                    /validate
-                </code>
-
-                <p>
-                    Validate PDF files
-                </p>
-
-            </div>
+            </span>
 
         </div>
 
@@ -448,13 +395,15 @@
         <a
             id="swaggerLink"
             class="docs-button"
-            href="#"
-            target="_blank"
-        >
+            href="http://127.0.0.1:8000/docs"
+            target="_blank">
+
             📘 Open Swagger API Documentation
+
         </a>
 
     </section>
+
 
 
     <!-- ================= TECHNOLOGY ================= -->
@@ -474,7 +423,7 @@
                 </h2>
 
                 <p>
-                    Technologies used in this PDF merger.
+                    Technologies used in this application.
                 </p>
 
             </div>
@@ -483,6 +432,7 @@
 
 
         <div class="technology-grid">
+
 
             <div class="technology-item">
 
@@ -539,11 +489,11 @@
             <div class="technology-item">
 
                 <strong>
-                    API Format
+                    Data Transfer
                 </strong>
 
                 <span>
-                    JSON + Multipart Form Data
+                    Multipart Form Data
                 </span>
 
             </div>
@@ -566,6 +516,7 @@
     </section>
 
 </main>
+
 
 
 <!-- ================= FOOTER ================= -->
@@ -591,8 +542,8 @@
 </footer>
 
 
+
 <script src="script.js"></script>
-```
 
 </body>
 
