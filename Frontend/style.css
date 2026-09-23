@@ -1,514 +1,287 @@
-/* ============================================================
-   MergePDF - Main Stylesheet
-   ============================================================ */
+// ============================================================
+// MergePDF - Frontend JavaScript
+// ============================================================
 
+// Store selected PDF files
+let selectedFiles = [];
 
-/* ============================================================
-   RESET
-   ============================================================ */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+// ============================================================
+// GET HTML ELEMENTS
+// ============================================================
 
+const fileInput = document.getElementById("pdfFiles");
+const fileList = document.getElementById("fileList");
+const mergeBtn = document.getElementById("mergeBtn");
+const status = document.getElementById("status");
+const downloadLink = document.getElementById("downloadLink");
+const downloadBtn = document.getElementById("downloadBtn");
 
-/* ============================================================
-   BODY
-   ============================================================ */
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f8;
-    min-height: 100vh;
+// ============================================================
+// SELECT PDF FILES
+// ============================================================
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+fileInput.addEventListener("change", function () {
 
-    padding: 20px;
-}
+    const files = Array.from(fileInput.files);
 
+    files.forEach(function (file) {
 
-/* ============================================================
-   MAIN CONTAINER
-   ============================================================ */
+        // Check whether the file is PDF
+        if (
+            file.type === "application/pdf" ||
+            file.name.toLowerCase().endsWith(".pdf")
+        ) {
 
-.container {
-    width: 100%;
-    max-width: 700px;
+            // Prevent duplicate files
+            const alreadyExists = selectedFiles.some(function (existingFile) {
+                return (
+                    existingFile.name === file.name &&
+                    existingFile.size === file.size
+                );
+            });
 
-    background: #ffffff;
+            if (!alreadyExists) {
+                selectedFiles.push(file);
+            }
 
-    padding: 35px;
+        } else {
 
-    border-radius: 15px;
+            status.style.color = "red";
+            status.textContent =
+                file.name + " is not a PDF file.";
 
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
-}
+        }
 
+    });
 
-/* ============================================================
-   HEADING
-   ============================================================ */
+    // Display selected files
+    displayFiles();
 
-h1 {
-    text-align: center;
+    // Clear input so the same file can be selected again
+    fileInput.value = "";
 
-    color: #222222;
+});
 
-    font-size: 32px;
 
-    margin-bottom: 10px;
-}
+// ============================================================
+// DISPLAY SELECTED FILES
+// ============================================================
 
+function displayFiles() {
 
-/* ============================================================
-   SUBTITLE
-   ============================================================ */
+    // Clear previous list
+    fileList.innerHTML = "";
 
-.subtitle {
-    text-align: center;
+    selectedFiles.forEach(function (file, index) {
 
-    color: #666666;
+        const listItem = document.createElement("li");
 
-    font-size: 16px;
+        listItem.className = "file-item";
 
-    margin-bottom: 30px;
-}
+        listItem.innerHTML = `
+            <span class="file-name">
+                ${index + 1}. ${file.name}
+            </span>
 
+            <button
+                type="button"
+                class="remove-btn"
+                onclick="removeFile(${index})">
+                Remove
+            </button>
+        `;
 
-/* ============================================================
-   UPLOAD BOX
-   ============================================================ */
+        fileList.appendChild(listItem);
 
-.upload-box {
-    border: 2px dashed #777777;
+    });
 
-    border-radius: 12px;
 
-    padding: 35px;
+    // Enable merge button only when 2 or more PDFs are selected
+    if (selectedFiles.length >= 2) {
 
-    text-align: center;
+        mergeBtn.disabled = false;
 
-    cursor: pointer;
+    } else {
 
-    background: #fafafa;
+        mergeBtn.disabled = true;
 
-    transition:
-        border-color 0.3s ease,
-        background 0.3s ease,
-        transform 0.3s ease;
-}
-
-
-/* Upload box hover */
-
-.upload-box:hover {
-    border-color: #007bff;
-
-    background: #f8fbff;
-
-    transform: translateY(-2px);
-}
-
-
-/* Upload text */
-
-.upload-box p {
-    color: #555555;
-
-    font-size: 16px;
-
-    margin-bottom: 18px;
-}
-
-
-/* ============================================================
-   FILE INPUT
-   ============================================================ */
-
-#pdfFiles {
-    display: none;
-}
-
-
-/* ============================================================
-   CHOOSE FILE BUTTON
-   ============================================================ */
-
-.choose-btn {
-    display: inline-block;
-
-    background: #007bff;
-
-    color: #ffffff;
-
-    padding: 12px 25px;
-
-    border-radius: 7px;
-
-    cursor: pointer;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    transition: background 0.3s ease;
-}
-
-
-.choose-btn:hover {
-    background: #0056b3;
-}
-
-
-/* ============================================================
-   FILE SECTION
-   ============================================================ */
-
-.file-section {
-    margin-top: 25px;
-}
-
-
-.file-section h3 {
-    color: #333333;
-
-    font-size: 18px;
-
-    margin-bottom: 12px;
-}
-
-
-/* ============================================================
-   FILE LIST
-   ============================================================ */
-
-#fileList {
-    list-style: none;
-
-    width: 100%;
-}
-
-
-/* ============================================================
-   FILE ITEM
-   ============================================================ */
-
-.file-item {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 10px;
-
-    background: #f1f3f5;
-
-    padding: 12px 15px;
-
-    margin-bottom: 8px;
-
-    border-radius: 7px;
-
-    border: 1px solid #e0e0e0;
-}
-
-
-/* ============================================================
-   FILE NAME
-   ============================================================ */
-
-.file-name {
-    color: #333333;
-
-    font-size: 14px;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-
-    max-width: 80%;
-}
-
-
-/* ============================================================
-   REMOVE BUTTON
-   ============================================================ */
-
-.remove-btn {
-    border: none;
-
-    background: #dc3545;
-
-    color: #ffffff;
-
-    padding: 7px 12px;
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
-    font-size: 13px;
-
-    transition: background 0.3s ease;
-}
-
-
-.remove-btn:hover {
-    background: #b02a37;
-}
-
-
-/* ============================================================
-   MERGE BUTTON
-   ============================================================ */
-
-.merge-btn {
-    width: 100%;
-
-    margin-top: 25px;
-
-    padding: 14px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background: #28a745;
-
-    color: #ffffff;
-
-    font-size: 17px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background 0.3s ease,
-        transform 0.2s ease;
-}
-
-
-.merge-btn:hover:not(:disabled) {
-    background: #218838;
-
-    transform: translateY(-1px);
-}
-
-
-/* Disabled merge button */
-
-.merge-btn:disabled {
-    background: #aaaaaa;
-
-    cursor: not-allowed;
-
-    transform: none;
-}
-
-
-/* ============================================================
-   STATUS MESSAGE
-   ============================================================ */
-
-#status {
-    text-align: center;
-
-    margin-top: 20px;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    min-height: 20px;
-}
-
-
-/* ============================================================
-   DOWNLOAD SECTION
-   ============================================================ */
-
-#downloadLink {
-    display: none;
-
-    text-align: center;
-
-    margin-top: 18px;
-}
-
-
-/* ============================================================
-   DOWNLOAD BUTTON
-   ============================================================ */
-
-#downloadLink a {
-    display: inline-block;
-
-    background: #6f42c1;
-
-    color: #ffffff;
-
-    text-decoration: none;
-
-    padding: 12px 25px;
-
-    border-radius: 7px;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    transition: background 0.3s ease;
-}
-
-
-#downloadLink a:hover {
-    background: #59339d;
-}
-
-
-/* ============================================================
-   RESPONSIVE DESIGN - TABLET
-   ============================================================ */
-
-@media (max-width: 768px) {
-
-    .container {
-        max-width: 600px;
-
-        padding: 30px;
-    }
-
-    h1 {
-        font-size: 28px;
-    }
-
-    .upload-box {
-        padding: 30px;
-    }
-}
-
-
-/* ============================================================
-   RESPONSIVE DESIGN - MOBILE
-   ============================================================ */
-
-@media (max-width: 600px) {
-
-    body {
-        padding: 15px;
-
-        align-items: flex-start;
-    }
-
-
-    .container {
-        width: 100%;
-
-        margin-top: 20px;
-
-        padding: 22px;
-
-        border-radius: 12px;
-    }
-
-
-    h1 {
-        font-size: 26px;
-    }
-
-
-    .subtitle {
-        font-size: 14px;
-
-        margin-bottom: 22px;
-    }
-
-
-    .upload-box {
-        padding: 25px 15px;
-    }
-
-
-    .upload-box p {
-        font-size: 14px;
-    }
-
-
-    .file-item {
-        padding: 10px;
-
-        align-items: center;
-    }
-
-
-    .file-name {
-        font-size: 13px;
-
-        max-width: 65%;
-    }
-
-
-    .remove-btn {
-        padding: 6px 9px;
-
-        font-size: 12px;
-    }
-
-
-    .merge-btn {
-        font-size: 16px;
-
-        padding: 13px;
     }
 
 }
 
 
-/* ============================================================
-   VERY SMALL MOBILE SCREENS
-   ============================================================ */
+// ============================================================
+// REMOVE PDF FILE
+// ============================================================
 
-@media (max-width: 400px) {
+function removeFile(index) {
 
-    .container {
-        padding: 18px;
+    if (index >= 0 && index < selectedFiles.length) {
+
+        selectedFiles.splice(index, 1);
+
+    }
+
+    displayFiles();
+
+    // Hide download button after changing files
+    downloadLink.style.display = "none";
+
+    status.textContent = "";
+
+}
+
+
+// ============================================================
+// MERGE PDF FILES
+// ============================================================
+
+async function mergePDFs() {
+
+    // Check minimum number of files
+    if (selectedFiles.length < 2) {
+
+        status.style.color = "red";
+
+        status.textContent =
+            "Please select at least 2 PDF files.";
+
+        return;
+
     }
 
 
-    h1 {
-        font-size: 23px;
+    // Create FormData
+    const formData = new FormData();
+
+
+    // Add all selected PDF files
+    selectedFiles.forEach(function (file) {
+
+        formData.append("files", file);
+
+    });
+
+
+    // Disable button while processing
+    mergeBtn.disabled = true;
+
+    mergeBtn.textContent = "Merging...";
+
+
+    // Show status
+    status.style.color = "#007bff";
+
+    status.textContent =
+        "Please wait, your PDFs are being merged...";
+
+
+    // Hide previous download button
+    downloadLink.style.display = "none";
+
+
+    try {
+
+        // Send files to FastAPI backend
+        const response = await fetch("/merge", {
+
+            method: "POST",
+
+            body: formData
+
+        });
+
+
+        // Check server response
+        if (!response.ok) {
+
+            let errorMessage = "Failed to merge PDF files.";
+
+            try {
+
+                const errorData = await response.json();
+
+                if (errorData.detail) {
+                    errorMessage = errorData.detail;
+                }
+
+            } catch (error) {
+
+                // Response was not JSON
+                console.log("Error response is not JSON.");
+
+            }
+
+            throw new Error(errorMessage);
+
+        }
+
+
+        // Convert response to PDF Blob
+        const blob = await response.blob();
+
+
+        // Create temporary download URL
+        const url = window.URL.createObjectURL(blob);
+
+
+        // Set download link
+        downloadBtn.href = url;
+
+        downloadBtn.download = "merged.pdf";
+
+
+        // Show download button
+        downloadLink.style.display = "block";
+
+
+        // Success message
+        status.style.color = "green";
+
+        status.textContent =
+            "PDFs merged successfully!";
+
+
+    } catch (error) {
+
+        console.error("Merge Error:", error);
+
+
+        status.style.color = "red";
+
+        status.textContent =
+            error.message ||
+            "Something went wrong while merging PDFs.";
+
     }
 
 
-    .choose-btn {
-        padding: 10px 18px;
+    // Enable button again
+    mergeBtn.disabled = false;
 
-        font-size: 14px;
-    }
+    mergeBtn.textContent = "Merge PDFs";
 
-
-    .file-item {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
+}
 
 
-    .file-name {
-        max-width: 100%;
-    }
+// ============================================================
+// CLEAN OBJECT URL AFTER DOWNLOAD
+// ============================================================
 
+downloadBtn.addEventListener("click", function () {
 
-    .remove-btn {
-        width: 100%;
-    }
+    setTimeout(function () {
 
-   }
+        const url = downloadBtn.href;
+
+        if (url.startsWith("blob:")) {
+
+            window.URL.revokeObjectURL(url);
+
+        }
+
+    }, 1000);
+
+});
