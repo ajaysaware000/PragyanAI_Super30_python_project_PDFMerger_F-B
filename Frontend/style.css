@@ -1,8 +1,5 @@
-```css
 /* ============================================================
-   PragyanAI PDF Merger
-   style.css
-   Matches current index.html + script.js
+   MergePDF - Main Stylesheet
    ============================================================ */
 
 
@@ -22,680 +19,328 @@
    ============================================================ */
 
 body {
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background: #f4f7fb;
-
-    color: #1f2937;
-
-    line-height: 1.6;
-
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
     min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
 }
 
 
 /* ============================================================
-   CONTAINER
+   MAIN CONTAINER
    ============================================================ */
 
 .container {
-    width: 90%;
+    width: 100%;
+    max-width: 700px;
 
-    max-width: 1100px;
+    background: #ffffff;
 
-    margin: 0 auto;
+    padding: 35px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
 }
 
 
 /* ============================================================
-   HEADER
+   HEADING
    ============================================================ */
 
-.header {
-    background:
-        linear-gradient(
-            135deg,
-            #111827,
-            #1e3a8a
-        );
-
-    color: #ffffff;
-
-    padding: 45px 20px;
-
+h1 {
     text-align: center;
-}
 
+    color: #222222;
 
-.header h1 {
-    font-size: 38px;
-
-    font-weight: 700;
+    font-size: 32px;
 
     margin-bottom: 10px;
 }
 
 
-.header p {
-    font-size: 18px;
+/* ============================================================
+   SUBTITLE
+   ============================================================ */
 
-    opacity: 0.9;
+.subtitle {
+    text-align: center;
 
-    margin-bottom: 15px;
-}
+    color: #666666;
 
+    font-size: 16px;
 
-.technology-badge {
-    display: inline-block;
-
-    padding: 7px 15px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.3);
-
-    border-radius: 20px;
-
-    font-size: 13px;
-
-    color: #ffffff;
-
-    background:
-        rgba(255, 255, 255, 0.08);
+    margin-bottom: 30px;
 }
 
 
 /* ============================================================
-   MAIN CONTENT
+   UPLOAD BOX
    ============================================================ */
 
-.main-content {
-    padding: 35px 0;
-}
-
-
-/* ============================================================
-   STATUS CARD
-   ============================================================ */
-
-.status-card {
-    width: 100%;
-
-    background: #ffffff;
-
-    border:
-        1px solid
-        #e5e7eb;
+.upload-box {
+    border: 2px dashed #777777;
 
     border-radius: 12px;
 
-    padding: 18px 22px;
-
-    margin-bottom: 25px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    box-shadow:
-        0 4px 15px
-        rgba(0, 0, 0, 0.05);
-}
-
-
-.status-card h3 {
-    font-size: 16px;
-
-    color: #111827;
-
-    margin-bottom: 3px;
-}
-
-
-.status-card p {
-    font-size: 14px;
-
-    color: #6b7280;
-}
-
-
-/* ============================================================
-   STATUS INDICATOR
-   ============================================================ */
-
-.status-indicator {
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 24px;
-
-    line-height: 1;
-}
-
-
-.status-indicator.checking {
-    color: #f59e0b;
-}
-
-
-.status-indicator.online {
-    color: #22c55e;
-}
-
-
-.status-indicator.offline {
-    color: #ef4444;
-}
-
-
-/* ============================================================
-   GENERAL CARD
-   ============================================================ */
-
-.card {
-    background: #ffffff;
-
-    border:
-        1px solid
-        #e5e7eb;
-
-    border-radius: 14px;
-
-    padding: 30px;
-
-    margin-bottom: 25px;
-
-    box-shadow:
-        0 5px 20px
-        rgba(0, 0, 0, 0.07);
-}
-
-
-/* ============================================================
-   SECTION HEADER
-   ============================================================ */
-
-.section-header {
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    margin-bottom: 25px;
-}
-
-
-.section-number {
-    width: 45px;
-
-    height: 45px;
-
-    min-width: 45px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: #1e3a8a;
-
-    color: #ffffff;
-
-    font-size: 20px;
-
-    font-weight: 700;
-}
-
-
-.section-header h2 {
-    color: #111827;
-
-    font-size: 24px;
-
-    line-height: 1.3;
-
-    margin-bottom: 4px;
-}
-
-
-.section-header p {
-    color: #6b7280;
-
-    font-size: 14px;
-
-    line-height: 1.5;
-}
-
-
-/* ============================================================
-   LABEL
-   ============================================================ */
-
-label {
-    display: block;
-
-    color: #374151;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    margin-bottom: 8px;
-}
-
-
-/* ============================================================
-   PDF FILE INPUT
-   ============================================================ */
-
-#pdfFiles {
-    width: 100%;
-
-    padding: 14px;
-
-    background: #f8fafc;
-
-    border:
-        2px dashed
-        #cbd5e1;
-
-    border-radius: 10px;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    color: #475569;
-
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease;
-}
-
-
-#pdfFiles:hover {
-    border-color: #2563eb;
-
-    background: #eff6ff;
-}
-
-
-#pdfFiles:focus {
-    outline: none;
-
-    border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(37, 99, 235, 0.12);
-}
-
-
-/* ============================================================
-   FILE INPUT BUTTON
-   ============================================================ */
-
-#pdfFiles::file-selector-button {
-    border: none;
-
-    background: #1e3a8a;
-
-    color: #ffffff;
-
-    padding: 9px 14px;
-
-    margin-right: 12px;
-
-    border-radius: 6px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease;
-}
-
-
-#pdfFiles::file-selector-button:hover {
-    background: #2563eb;
-}
-
-
-/* ============================================================
-   FILE HELP
-   ============================================================ */
-
-.file-help {
-    color: #6b7280;
-
-    font-size: 13px;
-
-    margin-top: 7px;
-
-    margin-bottom: 20px;
-}
-
-
-/* ============================================================
-   FILE LIST / PREVIEW
-   ============================================================ */
-
-.preview-container {
-    width: 100%;
-
-    margin-top: 20px;
-
-    padding: 20px;
-
-    background: #f8fafc;
-
-    border:
-        1px solid
-        #e2e8f0;
-
-    border-radius: 10px;
-}
-
-
-.preview-container h3 {
-    color: #1e293b;
-
-    font-size: 17px;
-
-    margin-bottom: 12px;
-}
-
-
-/* ============================================================
-   HIDDEN
-   ============================================================ */
-
-.hidden {
-    display: none !important;
-}
-
-
-/* ============================================================
-   SELECTED FILES LIST
-   ============================================================ */
-
-#selectedFiles {
-    list-style: none;
-
-    padding: 0;
-
-    margin: 0;
-}
-
-
-#selectedFiles li {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 10px;
-
-    width: 100%;
-
-    background: #ffffff;
-
-    border:
-        1px solid
-        #e5e7eb;
-
-    border-radius: 8px;
-
-    padding: 12px 14px;
-
-    margin-bottom: 8px;
-
-    color: #374151;
-
-    font-size: 14px;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-#selectedFiles li:hover {
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 3px 10px
-        rgba(0, 0, 0, 0.06);
-}
-
-
-#selectedFiles li:last-child {
-    margin-bottom: 0;
-}
-
-
-#selectedFiles li span {
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-
-    min-width: 0;
-}
-
-
-/* ============================================================
-   PRIMARY MERGE BUTTON
-   ============================================================ */
-
-.primary-button {
-    width: 100%;
-
-    margin-top: 20px;
-
-    padding: 14px 20px;
-
-    border: none;
-
-    border-radius: 9px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #1d4ed8
-        );
-
-    color: #ffffff;
-
-    font-size: 16px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.primary-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 7px 18px
-        rgba(37, 99, 235, 0.3);
-}
-
-
-.primary-button:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-
-.primary-button:disabled {
-    background: #cbd5e1;
-
-    color: #64748b;
-
-    cursor: not-allowed;
-
-    box-shadow: none;
-
-    transform: none;
-
-    opacity: 0.85;
-}
-
-
-/* ============================================================
-   MESSAGE
-   ============================================================ */
-
-.message {
-    width: 100%;
-
-    margin-top: 15px;
-
-    padding: 12px 15px;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-
-    line-height: 1.5;
-}
-
-
-.message:empty {
-    display: none;
-}
-
-
-/* Success message */
-
-.message.success {
-    display: block;
-
-    background: #dcfce7;
-
-    color: #166534;
-
-    border:
-        1px solid
-        #bbf7d0;
-}
-
-
-/* Error message */
-
-.message.error {
-    display: block;
-
-    background: #fee2e2;
-
-    color: #991b1b;
-
-    border:
-        1px solid
-        #fecaca;
-}
-
-
-/* Information message */
-
-.message.info {
-    display: block;
-
-    background: #dbeafe;
-
-    color: #1e40af;
-
-    border:
-        1px solid
-        #bfdbfe;
-}
-
-
-/* ============================================================
-   MERGED PDF RESULT
-   ============================================================ */
-
-.qr-container {
-    width: 100%;
-
-    margin-top: 25px;
-
-    padding: 25px;
+    padding: 35px;
 
     text-align: center;
 
-    background:
-        linear-gradient(
-            135deg,
-            #eff6ff,
-            #f0fdf4
-        );
+    cursor: pointer;
 
-    border:
-        1px solid
-        #bfdbfe;
+    background: #fafafa;
 
-    border-radius: 12px;
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        transform 0.3s ease;
 }
 
 
-.qr-container h3 {
-    color: #166534;
+/* Upload box hover */
 
-    font-size: 20px;
+.upload-box:hover {
+    border-color: #007bff;
 
-    margin-bottom: 7px;
+    background: #f8fbff;
+
+    transform: translateY(-2px);
 }
 
 
-.qr-container p {
-    color: #4b5563;
+/* Upload text */
 
-    font-size: 14px;
+.upload-box p {
+    color: #555555;
+
+    font-size: 16px;
 
     margin-bottom: 18px;
 }
 
 
 /* ============================================================
-   RESULT ACTIONS
+   FILE INPUT
    ============================================================ */
 
-.qr-actions {
+#pdfFiles {
+    display: none;
+}
+
+
+/* ============================================================
+   CHOOSE FILE BUTTON
+   ============================================================ */
+
+.choose-btn {
+    display: inline-block;
+
+    background: #007bff;
+
+    color: #ffffff;
+
+    padding: 12px 25px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    transition: background 0.3s ease;
+}
+
+
+.choose-btn:hover {
+    background: #0056b3;
+}
+
+
+/* ============================================================
+   FILE SECTION
+   ============================================================ */
+
+.file-section {
+    margin-top: 25px;
+}
+
+
+.file-section h3 {
+    color: #333333;
+
+    font-size: 18px;
+
+    margin-bottom: 12px;
+}
+
+
+/* ============================================================
+   FILE LIST
+   ============================================================ */
+
+#fileList {
+    list-style: none;
+
+    width: 100%;
+}
+
+
+/* ============================================================
+   FILE ITEM
+   ============================================================ */
+
+.file-item {
     display: flex;
 
-    justify-content: center;
+    justify-content: space-between;
 
     align-items: center;
 
-    gap: 12px;
+    gap: 10px;
 
-    flex-wrap: wrap;
+    background: #f1f3f5;
+
+    padding: 12px 15px;
+
+    margin-bottom: 8px;
+
+    border-radius: 7px;
+
+    border: 1px solid #e0e0e0;
+}
+
+
+/* ============================================================
+   FILE NAME
+   ============================================================ */
+
+.file-name {
+    color: #333333;
+
+    font-size: 14px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    max-width: 80%;
+}
+
+
+/* ============================================================
+   REMOVE BUTTON
+   ============================================================ */
+
+.remove-btn {
+    border: none;
+
+    background: #dc3545;
+
+    color: #ffffff;
+
+    padding: 7px 12px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition: background 0.3s ease;
+}
+
+
+.remove-btn:hover {
+    background: #b02a37;
+}
+
+
+/* ============================================================
+   MERGE BUTTON
+   ============================================================ */
+
+.merge-btn {
+    width: 100%;
+
+    margin-top: 25px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #28a745;
+
+    color: #ffffff;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.3s ease,
+        transform 0.2s ease;
+}
+
+
+.merge-btn:hover:not(:disabled) {
+    background: #218838;
+
+    transform: translateY(-1px);
+}
+
+
+/* Disabled merge button */
+
+.merge-btn:disabled {
+    background: #aaaaaa;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* ============================================================
+   STATUS MESSAGE
+   ============================================================ */
+
+#status {
+    text-align: center;
+
+    margin-top: 20px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    min-height: 20px;
+}
+
+
+/* ============================================================
+   DOWNLOAD SECTION
+   ============================================================ */
+
+#downloadLink {
+    display: none;
+
+    text-align: center;
+
+    margin-top: 18px;
 }
 
 
@@ -703,578 +348,167 @@ label {
    DOWNLOAD BUTTON
    ============================================================ */
 
-.secondary-button {
+#downloadLink a {
     display: inline-block;
 
-    padding: 12px 22px;
-
-    background: #111827;
+    background: #6f42c1;
 
     color: #ffffff;
 
     text-decoration: none;
 
-    border-radius: 8px;
+    padding: 12px 25px;
 
-    font-size: 14px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.secondary-button:hover {
-    background: #1f2937;
-
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 5px 12px
-        rgba(0, 0, 0, 0.15);
-}
-
-
-.secondary-button:active {
-    transform: translateY(0);
-}
-
-
-/* ============================================================
-   TECHNOLOGY GRID
-   ============================================================ */
-
-.technology-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 15px;
-}
-
-
-.technology-item {
-    min-height: 100px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    gap: 5px;
-
-    padding: 18px;
-
-    background: #f8fafc;
-
-    border:
-        1px solid
-        #e2e8f0;
-
-    border-radius: 10px;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.technology-item:hover {
-    transform: translateY(-3px);
-
-    box-shadow:
-        0 6px 15px
-        rgba(0, 0, 0, 0.07);
-}
-
-
-.technology-item strong {
-    color: #1e3a8a;
+    border-radius: 7px;
 
     font-size: 15px;
-}
-
-
-.technology-item span {
-    color: #64748b;
-
-    font-size: 13px;
-}
-
-
-/* ============================================================
-   API GRID
-   ============================================================ */
-
-.api-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 15px;
-
-    margin-bottom: 20px;
-}
-
-
-.api-item {
-    padding: 18px;
-
-    background: #f8fafc;
-
-    border:
-        1px solid
-        #e2e8f0;
-
-    border-radius: 10px;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.api-item:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 5px 12px
-        rgba(0, 0, 0, 0.06);
-}
-
-
-/* ============================================================
-   API METHOD
-   ============================================================ */
-
-.method {
-    display: inline-block;
-
-    padding: 4px 8px;
-
-    border-radius: 5px;
-
-    color: #ffffff;
-
-    font-size: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.5px;
-
-    vertical-align: middle;
-}
-
-
-.method.get {
-    background: #16a34a;
-}
-
-
-.method.post {
-    background: #2563eb;
-}
-
-
-.method.put {
-    background: #d97706;
-}
-
-
-.method.delete {
-    background: #dc2626;
-}
-
-
-/* ============================================================
-   API CODE
-   ============================================================ */
-
-.api-item code {
-    display: inline-block;
-
-    margin-left: 8px;
-
-    padding: 4px 8px;
-
-    background: #e5e7eb;
-
-    color: #111827;
-
-    border-radius: 5px;
-
-    font-family:
-        Consolas,
-        "Courier New",
-        monospace;
-
-    font-size: 13px;
-}
-
-
-.api-item p {
-    color: #64748b;
-
-    font-size: 13px;
-
-    margin-top: 8px;
-}
-
-
-/* ============================================================
-   SWAGGER DOCUMENTATION BUTTON
-   ============================================================ */
-
-.docs-button {
-    display: block;
-
-    width: 100%;
-
-    padding: 12px 18px;
-
-    text-align: center;
-
-    text-decoration: none;
-
-    background: #eef2ff;
-
-    color: #3730a3;
-
-    border:
-        1px solid
-        #c7d2fe;
-
-    border-radius: 9px;
-
-    font-size: 14px;
 
     font-weight: 600;
 
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease;
+    transition: background 0.3s ease;
 }
 
 
-.docs-button:hover {
-    background: #e0e7ff;
-
-    transform: translateY(-1px);
+#downloadLink a:hover {
+    background: #59339d;
 }
 
 
 /* ============================================================
-   FOOTER
+   RESPONSIVE DESIGN - TABLET
    ============================================================ */
 
-.footer {
-    background: #111827;
-
-    color: #d1d5db;
-
-    text-align: center;
-
-    padding: 30px 20px;
-
-    margin-top: 20px;
-}
-
-
-.footer strong {
-    display: block;
-
-    color: #ffffff;
-
-    font-size: 20px;
-
-    margin-bottom: 3px;
-}
-
-
-.footer p {
-    font-size: 13px;
-
-    margin-top: 5px;
-}
-
-
-/* ============================================================
-   BUTTON / LINK FOCUS
-   ============================================================ */
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
-    outline:
-        3px solid
-        rgba(37, 99, 235, 0.35);
-
-    outline-offset: 2px;
-}
-
-
-/* ============================================================
-   SCROLLBAR
-   ============================================================ */
-
-::-webkit-scrollbar {
-    width: 9px;
-}
-
-
-::-webkit-scrollbar-track {
-    background: #f1f5f9;
-}
-
-
-::-webkit-scrollbar-thumb {
-    background: #94a3b8;
-
-    border-radius: 10px;
-}
-
-
-::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
-}
-
-
-/* ============================================================
-   TABLET
-   ============================================================ */
-
-@media (max-width: 900px) {
+@media (max-width: 768px) {
 
     .container {
-        width: 92%;
+        max-width: 600px;
+
+        padding: 30px;
     }
 
-
-    .technology-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
+    h1 {
+        font-size: 28px;
     }
 
-
-    .header h1 {
-        font-size: 34px;
+    .upload-box {
+        padding: 30px;
     }
-
 }
 
 
 /* ============================================================
-   MOBILE
+   RESPONSIVE DESIGN - MOBILE
    ============================================================ */
 
 @media (max-width: 600px) {
 
-    .container {
-        width: 94%;
-    }
-
-
-    .header {
-        padding: 35px 15px;
-    }
-
-
-    .header h1 {
-        font-size: 28px;
-    }
-
-
-    .header p {
-        font-size: 15px;
-    }
-
-
-    .technology-badge {
-        font-size: 11px;
-
-        padding: 6px 10px;
-    }
-
-
-    .main-content {
-        padding: 20px 0;
-    }
-
-
-    .card {
-        padding: 20px;
-
-        border-radius: 11px;
-    }
-
-
-    .status-card {
+    body {
         padding: 15px;
 
-        gap: 10px;
-    }
-
-
-    .section-header {
         align-items: flex-start;
     }
 
 
-    .section-number {
-        width: 38px;
+    .container {
+        width: 100%;
 
-        min-width: 38px;
+        margin-top: 20px;
 
-        height: 38px;
+        padding: 22px;
 
-        font-size: 17px;
+        border-radius: 12px;
     }
 
 
-    .section-header h2 {
-        font-size: 20px;
+    h1 {
+        font-size: 26px;
     }
 
 
-    .section-header p {
+    .subtitle {
+        font-size: 14px;
+
+        margin-bottom: 22px;
+    }
+
+
+    .upload-box {
+        padding: 25px 15px;
+    }
+
+
+    .upload-box p {
+        font-size: 14px;
+    }
+
+
+    .file-item {
+        padding: 10px;
+
+        align-items: center;
+    }
+
+
+    .file-name {
         font-size: 13px;
+
+        max-width: 65%;
     }
 
 
-    .technology-grid {
-        grid-template-columns: 1fr;
+    .remove-btn {
+        padding: 6px 9px;
+
+        font-size: 12px;
     }
 
 
-    .api-grid {
-        grid-template-columns: 1fr;
-    }
+    .merge-btn {
+        font-size: 16px;
 
-
-    .qr-actions {
-        flex-direction: column;
-    }
-
-
-    .secondary-button {
-        width: 100%;
-
-        text-align: center;
-    }
-
-
-    #selectedFiles li {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-
-    #selectedFiles li span {
-        width: 100%;
+        padding: 13px;
     }
 
 }
 
 
 /* ============================================================
-   SMALL MOBILE
+   VERY SMALL MOBILE SCREENS
    ============================================================ */
 
 @media (max-width: 400px) {
 
-    .header h1 {
-        font-size: 24px;
+    .container {
+        padding: 18px;
     }
 
 
-    .header p {
+    h1 {
+        font-size: 23px;
+    }
+
+
+    .choose-btn {
+        padding: 10px 18px;
+
         font-size: 14px;
     }
 
 
-    .card {
-        padding: 16px;
+    .file-item {
+        flex-direction: column;
+
+        align-items: stretch;
     }
 
 
-    .status-card {
-        padding: 13px;
+    .file-name {
+        max-width: 100%;
     }
 
 
-    .primary-button {
-        font-size: 14px;
-
-        padding: 12px;
+    .remove-btn {
+        width: 100%;
     }
 
-
-    .section-header h2 {
-        font-size: 18px;
-    }
-
-
-    .section-number {
-        width: 34px;
-
-        min-width: 34px;
-
-        height: 34px;
-
-        font-size: 15px;
-    }
-
-
-    #pdfFiles {
-        padding: 10px;
-
-        font-size: 12px;
-    }
-
-
-    #pdfFiles::file-selector-button {
-        padding: 7px 10px;
-
-        font-size: 12px;
-    }
-
-}
-
-
-/* ============================================================
-   PRINT
-   ============================================================ */
-
-@media print {
-
-    .primary-button,
-    .docs-button,
-    .status-card {
-        display: none;
-    }
-
-
-    body {
-        background: #ffffff;
-    }
-
-
-    .card {
-        box-shadow: none;
-
-        border:
-            1px solid
-            #cccccc;
-    }
-
-}
-```
+   }
