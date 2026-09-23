@@ -1,6 +1,6 @@
-/* ============================================================
-   MergePDF - Main JavaScript
-   ============================================================ */
+// ============================================================
+// MergePDF - Frontend JavaScript
+// ============================================================
 
 // Store selected PDF files
 let selectedFiles = [];
@@ -24,11 +24,11 @@ const downloadBtn = document.getElementById("downloadBtn");
 
 fileInput.addEventListener("change", function () {
 
-    const files = Array.from(this.files);
+    const files = Array.from(fileInput.files);
 
     files.forEach(function (file) {
 
-        // Check whether the selected file is a PDF
+        // Check whether the file is PDF
         if (
             file.type === "application/pdf" ||
             file.name.toLowerCase().endsWith(".pdf")
@@ -36,26 +36,30 @@ fileInput.addEventListener("change", function () {
 
             // Prevent duplicate files
             const alreadyExists = selectedFiles.some(function (existingFile) {
-
                 return (
                     existingFile.name === file.name &&
-                    existingFile.size === file.size &&
-                    existingFile.lastModified === file.lastModified
+                    existingFile.size === file.size
                 );
-
             });
 
             if (!alreadyExists) {
                 selectedFiles.push(file);
             }
 
+        } else {
+
+            status.style.color = "red";
+            status.textContent =
+                file.name + " is not a PDF file.";
+
         }
 
     });
 
+    // Display selected files
     displayFiles();
 
-    // Reset input so the same file can be selected again
+    // Clear input so the same file can be selected again
     fileInput.value = "";
 
 });
@@ -67,17 +71,18 @@ fileInput.addEventListener("change", function () {
 
 function displayFiles() {
 
+    // Clear previous list
     fileList.innerHTML = "";
 
     selectedFiles.forEach(function (file, index) {
 
-        const li = document.createElement("li");
+        const listItem = document.createElement("li");
 
-        li.className = "file-item";
+        listItem.className = "file-item";
 
-        li.innerHTML = `
+        listItem.innerHTML = `
             <span class="file-name">
-                ${index + 1}. ${escapeHTML(file.name)}
+                ${index + 1}. ${file.name}
             </span>
 
             <button
@@ -88,34 +93,19 @@ function displayFiles() {
             </button>
         `;
 
-        fileList.appendChild(li);
+        fileList.appendChild(listItem);
 
     });
 
 
-    // Enable merge button only when 2 or more files exist
-    mergeBtn.disabled = selectedFiles.length < 2;
+    // Enable merge button only when 2 or more PDFs are selected
+    if (selectedFiles.length >= 2) {
 
-
-    // Clear download section if files are changed
-    downloadLink.style.display = "none";
-
-    if (selectedFiles.length === 0) {
-
-        status.innerText = "";
-
-    } else if (selectedFiles.length === 1) {
-
-        status.style.color = "#666666";
-
-        status.innerText = "Select at least one more PDF.";
+        mergeBtn.disabled = false;
 
     } else {
 
-        status.style.color = "#28a745";
-
-        status.innerText =
-            `${selectedFiles.length} PDF files selected.`;
+        mergeBtn.disabled = true;
 
     }
 
@@ -123,24 +113,29 @@ function displayFiles() {
 
 
 // ============================================================
-// REMOVE FILE
+// REMOVE PDF FILE
 // ============================================================
 
 function removeFile(index) {
 
-    if (index < 0 || index >= selectedFiles.length) {
-        return;
+    if (index >= 0 && index < selectedFiles.length) {
+
+        selectedFiles.splice(index, 1);
+
     }
 
-    selectedFiles.splice(index, 1);
-
     displayFiles();
+
+    // Hide download button after changing files
+    downloadLink.style.display = "none";
+
+    status.textContent = "";
 
 }
 
 
 // ============================================================
-// MERGE PDFs
+// MERGE PDF FILES
 // ============================================================
 
 async function mergePDFs() {
@@ -148,9 +143,9 @@ async function mergePDFs() {
     // Check minimum number of files
     if (selectedFiles.length < 2) {
 
-        status.style.color = "#dc3545";
+        status.style.color = "red";
 
-        status.innerText =
+        status.textContent =
             "Please select at least 2 PDF files.";
 
         return;
@@ -162,7 +157,7 @@ async function mergePDFs() {
     const formData = new FormData();
 
 
-    // Add PDFs to FormData in selected order
+    // Add all selected PDF files
     selectedFiles.forEach(function (file) {
 
         formData.append("files", file);
@@ -170,19 +165,26 @@ async function mergePDFs() {
     });
 
 
-    // Disable merge button while processing
+    // Disable button while processing
     mergeBtn.disabled = true;
 
+    mergeBtn.textContent = "Merging...";
+
+
+    // Show status
     status.style.color = "#007bff";
 
-    status.innerText = "Merging PDFs...";
+    status.textContent =
+        "Please wait, your PDFs are being merged...";
 
+
+    // Hide previous download button
     downloadLink.style.display = "none";
 
 
     try {
 
-        // Send PDFs to backend
+        // Send files to FastAPI backend
         const response = await fetch("/merge", {
 
             method: "POST",
@@ -195,19 +197,20 @@ async function mergePDFs() {
         // Check server response
         if (!response.ok) {
 
-            let errorMessage = "Failed to merge PDFs.";
+            let errorMessage = "Failed to merge PDF files.";
 
             try {
 
                 const errorData = await response.json();
 
-                if (errorData.error) {
-                    errorMessage = errorData.error;
+                if (errorData.detail) {
+                    errorMessage = errorData.detail;
                 }
 
             } catch (error) {
 
-                // Ignore JSON parsing error
+                // Response was not JSON
+                console.log("Error response is not JSON.");
 
             }
 
@@ -216,7 +219,7 @@ async function mergePDFs() {
         }
 
 
-        // Convert server response to PDF Blob
+        // Convert response to PDF Blob
         const blob = await response.blob();
 
 
@@ -235,41 +238,50 @@ async function mergePDFs() {
 
 
         // Success message
-        status.style.color = "#28a745";
+        status.style.color = "green";
 
-        status.innerText =
+        status.textContent =
             "PDFs merged successfully!";
 
 
     } catch (error) {
 
-        console.error("Merge error:", error);
+        console.error("Merge Error:", error);
 
-        status.style.color = "#dc3545";
 
-        status.innerText =
+        status.style.color = "red";
+
+        status.textContent =
             error.message ||
-            "Error merging PDFs. Please try again.";
+            "Something went wrong while merging PDFs.";
 
     }
 
 
-    // Enable merge button again
-    mergeBtn.disabled = selectedFiles.length < 2;
+    // Enable button again
+    mergeBtn.disabled = false;
+
+    mergeBtn.textContent = "Merge PDFs";
 
 }
 
 
 // ============================================================
-// ESCAPE HTML
+// CLEAN OBJECT URL AFTER DOWNLOAD
 // ============================================================
 
-function escapeHTML(text) {
+downloadBtn.addEventListener("click", function () {
 
-    const div = document.createElement("div");
+    setTimeout(function () {
 
-    div.textContent = text;
+        const url = downloadBtn.href;
 
-    return div.innerHTML;
+        if (url.startsWith("blob:")) {
 
-}
+            window.URL.revokeObjectURL(url);
+
+        }
+
+    }, 1000);
+
+});
