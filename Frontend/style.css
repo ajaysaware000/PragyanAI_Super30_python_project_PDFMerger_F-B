@@ -1,4 +1,3 @@
-
 /* ============================================================
    PragyanAI PDF Merger
    style.css
@@ -104,5 +103,995 @@ body {
 
 /* ============================================================
    CARD
-   ==========================================
-```
+   ============================================================ */
+
+.card {
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    padding: 30px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0, 0, 0, 0.07);
+
+    border:
+        1px solid
+        #e5e7eb;
+}
+
+
+/* ============================================================
+   SECTION HEADER
+   ============================================================ */
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+
+.section-number {
+    width: 45px;
+
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #1e3a8a;
+
+    color: white;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    flex-shrink: 0;
+}
+
+
+.section-header h2 {
+    color: #111827;
+
+    font-size: 24px;
+
+    margin-bottom: 3px;
+}
+
+
+.section-header p {
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   STATUS CARD
+   ============================================================ */
+
+.status-card {
+    background: white;
+
+    border:
+        1px solid
+        #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 18px 22px;
+
+    margin-bottom: 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0, 0, 0, 0.05);
+}
+
+
+.status-card h3 {
+    font-size: 16px;
+
+    color: #111827;
+
+    margin-bottom: 3px;
+}
+
+
+.status-card p {
+    font-size: 14px;
+
+    color: #6b7280;
+}
+
+
+.status-indicator {
+    font-size: 25px;
+
+    line-height: 1;
+}
+
+
+.status-indicator.checking {
+    color: #f59e0b;
+}
+
+
+.status-indicator.online {
+    color: #22c55e;
+}
+
+
+.status-indicator.offline {
+    color: #ef4444;
+}
+
+
+/* ============================================================
+   FORM LABEL
+   ============================================================ */
+
+label {
+    display: block;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #374151;
+
+    margin-bottom: 8px;
+}
+
+
+/* ============================================================
+   FILE INPUT
+   ============================================================ */
+
+input[type="file"] {
+    width: 100%;
+
+    padding: 14px;
+
+    background: #f9fafb;
+
+    border:
+        2px dashed
+        #cbd5e1;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+input[type="file"]:hover {
+    border-color: #2563eb;
+
+    background: #eff6ff;
+}
+
+
+input[type="file"]:focus {
+    outline: none;
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.12);
+}
+
+
+/* ============================================================
+   FILE HELP TEXT
+   ============================================================ */
+
+.file-help {
+    color: #6b7280;
+
+    font-size: 13px;
+
+    margin-top: 7px;
+
+    margin-bottom: 20px;
+}
+
+
+/* ============================================================
+   FILE PREVIEW CONTAINER
+   ============================================================ */
+
+.preview-container {
+    margin-top: 20px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 10px;
+}
+
+
+.preview-container h3 {
+    font-size: 17px;
+
+    color: #1e293b;
+
+    margin-bottom: 12px;
+}
+
+
+/* ============================================================
+   HIDDEN CLASS
+   ============================================================ */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ============================================================
+   SELECTED FILE LIST
+   ============================================================ */
+
+#selectedFiles {
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+}
+
+
+#selectedFiles li {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    background: white;
+
+    border:
+        1px solid
+        #e5e7eb;
+
+    border-radius: 8px;
+
+    padding: 12px 14px;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#selectedFiles li:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 3px 10px
+        rgba(0, 0, 0, 0.06);
+}
+
+
+#selectedFiles li:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   PRIMARY BUTTON
+   ============================================================ */
+
+.primary-button {
+    width: 100%;
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 14px 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+
+    margin-top: 20px;
+}
+
+
+.primary-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px
+        rgba(37, 99, 235, 0.3);
+}
+
+
+.primary-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+
+.primary-button:disabled {
+    background: #cbd5e1;
+
+    color: #64748b;
+
+    cursor: not-allowed;
+
+    opacity: 0.8;
+}
+
+
+/* ============================================================
+   MESSAGE
+   ============================================================ */
+
+.message {
+    margin-top: 15px;
+
+    padding: 12px 15px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    display: none;
+}
+
+
+.message.success {
+    display: block;
+
+    background: #dcfce7;
+
+    color: #166534;
+
+    border:
+        1px solid
+        #bbf7d0;
+}
+
+
+.message.error {
+    display: block;
+
+    background: #fee2e2;
+
+    color: #991b1b;
+
+    border:
+        1px solid
+        #fecaca;
+}
+
+
+.message.info {
+    display: block;
+
+    background: #dbeafe;
+
+    color: #1e40af;
+
+    border:
+        1px solid
+        #bfdbfe;
+}
+
+
+/* ============================================================
+   RESULT CONTAINER
+   ============================================================ */
+
+.qr-container {
+    margin-top: 25px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff,
+            #f0fdf4
+        );
+
+    border:
+        1px solid
+        #bfdbfe;
+
+    border-radius: 12px;
+}
+
+
+.qr-container h3 {
+    color: #166534;
+
+    font-size: 20px;
+
+    margin-bottom: 6px;
+}
+
+
+.qr-container p {
+    color: #4b5563;
+
+    font-size: 14px;
+
+    margin-bottom: 18px;
+}
+
+
+/* ============================================================
+   QR ACTIONS
+   ============================================================ */
+
+.qr-actions {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   SECONDARY BUTTON
+   ============================================================ */
+
+.secondary-button {
+    display: inline-block;
+
+    text-decoration: none;
+
+    padding: 12px 22px;
+
+    border-radius: 8px;
+
+    background: #111827;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.secondary-button:hover {
+    background: #1f2937;
+
+    transform: translateY(-2px);
+}
+
+
+/* ============================================================
+   TECHNOLOGY GRID
+   ============================================================ */
+
+.technology-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+
+.technology-item {
+    padding: 18px;
+
+    background: #f8fafc;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.technology-item:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 6px 15px
+        rgba(0, 0, 0, 0.07);
+}
+
+
+.technology-item strong {
+    color: #1e3a8a;
+
+    font-size: 15px;
+}
+
+
+.technology-item span {
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   API GRID
+   ============================================================ */
+
+.api-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+
+.api-item {
+    background: #f8fafc;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 10px;
+
+    padding: 18px;
+}
+
+
+.api-item code {
+    display: inline-block;
+
+    margin-left: 8px;
+
+    padding: 4px 8px;
+
+    background: #e5e7eb;
+
+    color: #111827;
+
+    border-radius: 5px;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size: 13px;
+}
+
+
+.api-item p {
+    color: #64748b;
+
+    font-size: 13px;
+
+    margin-top: 8px;
+}
+
+
+/* ============================================================
+   API METHOD BADGES
+   ============================================================ */
+
+.method {
+    display: inline-block;
+
+    padding: 4px 8px;
+
+    border-radius: 5px;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 0.5px;
+}
+
+
+.method.get {
+    background: #16a34a;
+}
+
+
+.method.post {
+    background: #2563eb;
+}
+
+
+.method.put {
+    background: #d97706;
+}
+
+
+.method.delete {
+    background: #dc2626;
+}
+
+
+/* ============================================================
+   SWAGGER BUTTON
+   ============================================================ */
+
+.docs-button {
+    display: block;
+
+    width: 100%;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    background: #eef2ff;
+
+    color: #3730a3;
+
+    border:
+        1px solid
+        #c7d2fe;
+
+    border-radius: 9px;
+
+    padding: 12px 18px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.docs-button:hover {
+    background: #e0e7ff;
+
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.footer {
+    background: #111827;
+
+    color: #d1d5db;
+
+    text-align: center;
+
+    padding: 30px 20px;
+
+    margin-top: 20px;
+}
+
+
+.footer strong {
+    color: white;
+
+    font-size: 20px;
+}
+
+
+.footer p {
+    font-size: 13px;
+
+    margin-top: 5px;
+}
+
+
+/* ============================================================
+   FILE INPUT CUSTOM AREA
+   ============================================================ */
+
+input[type="file"]::file-selector-button {
+    border: none;
+
+    background: #1e3a8a;
+
+    color: white;
+
+    padding: 9px 14px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    margin-right: 12px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+input[type="file"]::file-selector-button:hover {
+    background: #2563eb;
+}
+
+
+/* ============================================================
+   FOCUS ACCESSIBILITY
+   ============================================================ */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline:
+        3px solid
+        rgba(37, 99, 235, 0.35);
+
+    outline-offset: 2px;
+}
+
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+
+    border-radius: 10px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+
+/* ============================================================
+   RESPONSIVE DESIGN - TABLET
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .technology-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .container {
+        width: 92%;
+    }
+
+    .header h1 {
+        font-size: 32px;
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE DESIGN - MOBILE
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .container {
+        width: 94%;
+    }
+
+
+    .header {
+        padding: 35px 15px;
+    }
+
+
+    .header h1 {
+        font-size: 27px;
+    }
+
+
+    .header p {
+        font-size: 15px;
+    }
+
+
+    .technology-badge {
+        font-size: 11px;
+
+        padding: 6px 10px;
+    }
+
+
+    .main-content {
+        padding: 20px 0;
+    }
+
+
+    .card {
+        padding: 20px;
+
+        border-radius: 11px;
+    }
+
+
+    .status-card {
+        padding: 15px;
+
+        gap: 10px;
+    }
+
+
+    .section-header {
+        align-items: flex-start;
+    }
+
+
+    .section-number {
+        width: 38px;
+
+        height: 38px;
+
+        font-size: 17px;
+    }
+
+
+    .section-header h2 {
+        font-size: 20px;
+    }
+
+
+    .section-header p {
+        font-size: 13px;
+    }
+
+
+    .technology-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .api-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .qr-actions {
+        flex-direction: column;
+    }
+
+
+    .secondary-button {
+        width: 100%;
+    }
+
+
+    #selectedFiles li {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+
+/* ============================================================
+   VERY SMALL DEVICES
+   ============================================================ */
+
+@media (max-width: 380px) {
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+
+    .header p {
+        font-size: 14px;
+    }
+
+
+    .card {
+        padding: 16px;
+    }
+
+
+    .primary-button {
+        font-size: 14px;
+
+        padding: 12px;
+    }
+
+
+    .section-header h2 {
+        font-size: 18px;
+    }
+
+}
