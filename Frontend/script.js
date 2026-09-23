@@ -1,267 +1,111 @@
-```javascript
 // ============================================================
-// PragyanAI PDF Merger
-// script.js
+// MergePDF - Frontend JavaScript
 // ============================================================
 
-
-// ============================================================
-// FASTAPI BACKEND URL
-// ============================================================
-
-// LOCAL DEVELOPMENT
-// const API_URL = "http://127.0.0.1:8000";
-
-// PRODUCTION
-// Replace this with your deployed FastAPI backend URL.
-
-const API_URL =
-    "https://your-fastapi-backend.onrender.com";
-
-console.log("PDF Merger API URL:", API_URL);
+// Store selected PDF files
+let selectedFiles = [];
 
 
 // ============================================================
-// DOM ELEMENTS
+// GET HTML ELEMENTS
 // ============================================================
 
-const pdfFiles =
-    document.getElementById("pdfFiles");
-
-const mergeButton =
-    document.getElementById("mergeButton");
-
-const mergeMessage =
-    document.getElementById("mergeMessage");
-
-const fileList =
-    document.getElementById("fileList");
-
-const selectedFiles =
-    document.getElementById("selectedFiles");
-
-const resultContainer =
-    document.getElementById("resultContainer");
-
-const downloadButton =
-    document.getElementById("downloadButton");
-
-const apiStatus =
-    document.getElementById("apiStatus");
-
-const statusIndicator =
-    document.getElementById("statusIndicator");
-
-const swaggerLink =
-    document.getElementById("swaggerLink");
+const fileInput = document.getElementById("pdfFiles");
+const fileList = document.getElementById("fileList");
+const mergeBtn = document.getElementById("mergeBtn");
+const status = document.getElementById("status");
+const downloadLink = document.getElementById("downloadLink");
+const downloadBtn = document.getElementById("downloadBtn");
 
 
 // ============================================================
-// APPLICATION STATE
+// SELECT PDF FILES
 // ============================================================
 
-let mergedPDFBlob = null;
-let mergedPDFURL = null;
+fileInput.addEventListener("change", function () {
 
+    const files = Array.from(fileInput.files);
 
-// ============================================================
-// INITIALIZE
-// ============================================================
+    files.forEach(function (file) {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+        // Check whether the file is PDF
+        if (
+            file.type === "application/pdf" ||
+            file.name.toLowerCase().endsWith(".pdf")
+        ) {
 
-        checkAPIStatus();
+            // Prevent duplicate files
+            const alreadyExists = selectedFiles.some(function (existingFile) {
+                return (
+                    existingFile.name === file.name &&
+                    existingFile.size === file.size
+                );
+            });
 
-        if (swaggerLink) {
-            swaggerLink.href =
-                `${API_URL}/docs`;
-        }
-
-    }
-);
-
-
-// ============================================================
-// FILE INPUT EVENT
-// ============================================================
-
-if (pdfFiles) {
-
-    pdfFiles.addEventListener(
-        "change",
-        function () {
-
-            handleFileSelection(
-                pdfFiles.files
-            );
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// HANDLE FILE SELECTION
-// ============================================================
-
-function handleFileSelection(files) {
-
-    clearMessage();
-
-    hideResult();
-
-    selectedFiles.innerHTML = "";
-
-
-    // Convert FileList to normal array
-    const fileArray =
-        Array.from(files);
-
-
-    // ========================================================
-    // CHECK NUMBER OF FILES
-    // ========================================================
-
-    if (fileArray.length === 0) {
-
-        fileList.classList.add("hidden");
-
-        mergeButton.disabled = true;
-
-        return;
-
-    }
-
-
-    // Minimum two PDF files
-    if (fileArray.length < 2) {
-
-        showMessage(
-            "Please select at least two PDF files.",
-            "error"
-        );
-
-        fileList.classList.remove(
-            "hidden"
-        );
-
-        mergeButton.disabled = true;
-
-    }
-
-    else {
-
-        mergeButton.disabled = false;
-
-    }
-
-
-    // ========================================================
-    // CHECK FILE TYPES
-    // ========================================================
-
-    let invalidFile = false;
-
-
-    fileArray.forEach(
-        function (file, index) {
-
-            if (
-                file.type !== "application/pdf" &&
-                !file.name
-                    .toLowerCase()
-                    .endsWith(".pdf")
-            ) {
-
-                invalidFile = true;
-
+            if (!alreadyExists) {
+                selectedFiles.push(file);
             }
 
+        } else {
 
-            // ==================================================
-            // CREATE FILE LIST ITEM
-            // ==================================================
-
-            const listItem =
-                document.createElement("li");
-
-
-            // File information
-            const fileInfo =
-                document.createElement("span");
-
-
-            fileInfo.textContent =
-                `${index + 1}. ${file.name}`;
-
-
-            // File size
-            const fileSize =
-                document.createElement("small");
-
-
-            fileSize.textContent =
-                ` (${formatFileSize(file.size)})`;
-
-
-            fileInfo.appendChild(
-                fileSize
-            );
-
-
-            listItem.appendChild(
-                fileInfo
-            );
-
-
-            selectedFiles.appendChild(
-                listItem
-            );
+            status.style.color = "red";
+            status.textContent =
+                file.name + " is not a PDF file.";
 
         }
-    );
+
+    });
+
+    // Display selected files
+    displayFiles();
+
+    // Clear input so the same file can be selected again
+    fileInput.value = "";
+
+});
 
 
-    // ========================================================
-    // SHOW FILE LIST
-    // ========================================================
+// ============================================================
+// DISPLAY SELECTED FILES
+// ============================================================
 
-    fileList.classList.remove(
-        "hidden"
-    );
+function displayFiles() {
+
+    // Clear previous list
+    fileList.innerHTML = "";
+
+    selectedFiles.forEach(function (file, index) {
+
+        const listItem = document.createElement("li");
+
+        listItem.className = "file-item";
+
+        listItem.innerHTML = `
+            <span class="file-name">
+                ${index + 1}. ${file.name}
+            </span>
+
+            <button
+                type="button"
+                class="remove-btn"
+                onclick="removeFile(${index})">
+                Remove
+            </button>
+        `;
+
+        fileList.appendChild(listItem);
+
+    });
 
 
-    // ========================================================
-    // INVALID FILE MESSAGE
-    // ========================================================
+    // Enable merge button only when 2 or more PDFs are selected
+    if (selectedFiles.length >= 2) {
 
-    if (invalidFile) {
+        mergeBtn.disabled = false;
 
-        showMessage(
-            "Only PDF files are allowed.",
-            "error"
-        );
+    } else {
 
-        mergeButton.disabled = true;
-
-        return;
-
-    }
-
-
-    // ========================================================
-    // SUCCESS MESSAGE
-    // ========================================================
-
-    if (fileArray.length >= 2) {
-
-        showMessage(
-            `${fileArray.length} PDF files selected. Ready to merge.`,
-            "success"
-        );
+        mergeBtn.disabled = true;
 
     }
 
@@ -269,15 +113,23 @@ function handleFileSelection(files) {
 
 
 // ============================================================
-// MERGE BUTTON EVENT
+// REMOVE PDF FILE
 // ============================================================
 
-if (mergeButton) {
+function removeFile(index) {
 
-    mergeButton.addEventListener(
-        "click",
-        mergePDFs
-    );
+    if (index >= 0 && index < selectedFiles.length) {
+
+        selectedFiles.splice(index, 1);
+
+    }
+
+    displayFiles();
+
+    // Hide download button after changing files
+    downloadLink.style.display = "none";
+
+    status.textContent = "";
 
 }
 
@@ -288,679 +140,148 @@ if (mergeButton) {
 
 async function mergePDFs() {
 
-    const files =
-        Array.from(
-            pdfFiles.files
-        );
+    // Check minimum number of files
+    if (selectedFiles.length < 2) {
 
+        status.style.color = "red";
 
-    // ========================================================
-    // VALIDATE FILES
-    // ========================================================
-
-    if (files.length < 2) {
-
-        showMessage(
-            "Please select at least two PDF files.",
-            "error"
-        );
+        status.textContent =
+            "Please select at least 2 PDF files.";
 
         return;
 
     }
 
 
-    // Check PDF files
-    const invalidFile =
-        files.some(
-            function (file) {
-
-                return (
-                    file.type !== "application/pdf" &&
-                    !file.name
-                        .toLowerCase()
-                        .endsWith(".pdf")
-                );
-
-            }
-        );
+    // Create FormData
+    const formData = new FormData();
 
 
-    if (invalidFile) {
+    // Add all selected PDF files
+    selectedFiles.forEach(function (file) {
 
-        showMessage(
-            "Only PDF files are allowed.",
-            "error"
-        );
+        formData.append("files", file);
 
-        return;
-
-    }
+    });
 
 
-    // ========================================================
-    // DISABLE BUTTON
-    // ========================================================
+    // Disable button while processing
+    mergeBtn.disabled = true;
 
-    mergeButton.disabled = true;
-
-    mergeButton.textContent =
-        "⏳ Merging PDF files...";
+    mergeBtn.textContent = "Merging...";
 
 
-    showMessage(
-        "Uploading PDF files to the FastAPI backend...",
-        "info"
-    );
+    // Show status
+    status.style.color = "#007bff";
+
+    status.textContent =
+        "Please wait, your PDFs are being merged...";
 
 
-    hideResult();
+    // Hide previous download button
+    downloadLink.style.display = "none";
 
 
     try {
 
-        // ====================================================
-        // CREATE FORM DATA
-        // ====================================================
+        // Send files to FastAPI backend
+        const response = await fetch("/merge", {
 
-        const formData =
-            new FormData();
+            method: "POST",
 
+            body: formData
 
-        files.forEach(
-            function (file) {
-
-                formData.append(
-                    "files",
-                    file
-                );
-
-            }
-        );
+        });
 
 
-        // ====================================================
-        // SEND REQUEST TO FASTAPI
-        // ====================================================
-
-        const response =
-            await fetch(
-                `${API_URL}/merge`,
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
-
-
-        // ====================================================
-        // CHECK RESPONSE
-        // ====================================================
-
+        // Check server response
         if (!response.ok) {
 
-            let errorMessage =
-                "Failed to merge PDF files.";
+            let errorMessage = "Failed to merge PDF files.";
 
             try {
 
-                const errorData =
-                    await response.json();
+                const errorData = await response.json();
 
                 if (errorData.detail) {
-
-                    errorMessage =
-                        errorData.detail;
-
+                    errorMessage = errorData.detail;
                 }
 
-            }
+            } catch (error) {
 
-            catch (error) {
-
-                console.log(
-                    "Could not read error response."
-                );
+                // Response was not JSON
+                console.log("Error response is not JSON.");
 
             }
 
-
-            throw new Error(
-                errorMessage
-            );
+            throw new Error(errorMessage);
 
         }
 
 
-        // ====================================================
-        // GET MERGED PDF AS BLOB
-        // ====================================================
-
-        mergedPDFBlob =
-            await response.blob();
+        // Convert response to PDF Blob
+        const blob = await response.blob();
 
 
-        // ====================================================
-        // CREATE DOWNLOAD URL
-        // ====================================================
-
-        if (mergedPDFURL) {
-
-            URL.revokeObjectURL(
-                mergedPDFURL
-            );
-
-        }
+        // Create temporary download URL
+        const url = window.URL.createObjectURL(blob);
 
 
-        mergedPDFURL =
-            URL.createObjectURL(
-                mergedPDFBlob
-            );
+        // Set download link
+        downloadBtn.href = url;
+
+        downloadBtn.download = "merged.pdf";
 
 
-        // ====================================================
-        // SET DOWNLOAD BUTTON
-        // ====================================================
-
-        downloadButton.href =
-            mergedPDFURL;
-
-        downloadButton.download =
-            "PragyanAI_Merged.pdf";
+        // Show download button
+        downloadLink.style.display = "block";
 
 
-        // ====================================================
-        // SHOW RESULT
-        // ====================================================
+        // Success message
+        status.style.color = "green";
 
-        resultContainer.classList.remove(
-            "hidden"
-        );
+        status.textContent =
+            "PDFs merged successfully!";
 
 
-        showMessage(
-            "PDF files merged successfully!",
-            "success"
-        );
+    } catch (error) {
+
+        console.error("Merge Error:", error);
 
 
-        // Scroll to result
-        resultContainer.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
+        status.style.color = "red";
 
-    }
-
-
-    catch (error) {
-
-        console.error(
-            "Merge Error:",
-            error
-        );
-
-
-        showMessage(
+        status.textContent =
             error.message ||
-            "Something went wrong while merging the PDFs.",
-            "error"
-        );
+            "Something went wrong while merging PDFs.";
 
     }
 
 
-    finally {
+    // Enable button again
+    mergeBtn.disabled = false;
 
-        // ====================================================
-        // ENABLE BUTTON
-        // ====================================================
-
-        mergeButton.disabled =
-            pdfFiles.files.length < 2;
-
-
-        mergeButton.textContent =
-            "📄 Merge PDF Files";
-
-    }
+    mergeBtn.textContent = "Merge PDFs";
 
 }
 
 
 // ============================================================
-// CHECK API STATUS
+// CLEAN OBJECT URL AFTER DOWNLOAD
 // ============================================================
 
-async function checkAPIStatus() {
+downloadBtn.addEventListener("click", function () {
 
-    try {
+    setTimeout(function () {
 
-        apiStatus.textContent =
-            "Checking backend...";
+        const url = downloadBtn.href;
 
-        statusIndicator.className =
-            "status-indicator checking";
+        if (url.startsWith("blob:")) {
 
-
-        const response =
-            await fetch(
-                `${API_URL}/health`
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Backend returned an error."
-            );
+            window.URL.revokeObjectURL(url);
 
         }
 
+    }, 1000);
 
-        const result =
-            await response.json();
-
-
-        if (
-            result.success === true ||
-            result.status === "healthy"
-        ) {
-
-            apiStatus.textContent =
-                "Backend API is online";
-
-            statusIndicator.className =
-                "status-indicator online";
-
-        }
-
-        else {
-
-            apiStatus.textContent =
-                "Backend API responded";
-
-            statusIndicator.className =
-                "status-indicator online";
-
-        }
-
-    }
-
-
-    catch (error) {
-
-        console.error(
-            "API Status Error:",
-            error
-        );
-
-
-        apiStatus.textContent =
-            "Backend API is offline";
-
-
-        statusIndicator.className =
-            "status-indicator offline";
-
-    }
-
-}
-
-
-// ============================================================
-// SHOW MESSAGE
-// ============================================================
-
-function showMessage(
-    message,
-    type
-) {
-
-    if (!mergeMessage) {
-        return;
-    }
-
-
-    mergeMessage.textContent =
-        message;
-
-
-    mergeMessage.className =
-        `message ${type}`;
-
-}
-
-
-// ============================================================
-// CLEAR MESSAGE
-// ============================================================
-
-function clearMessage() {
-
-    if (!mergeMessage) {
-        return;
-    }
-
-
-    mergeMessage.textContent = "";
-
-    mergeMessage.className =
-        "message";
-
-}
-
-
-// ============================================================
-// HIDE RESULT
-// ============================================================
-
-function hideResult() {
-
-    if (!resultContainer) {
-        return;
-    }
-
-
-    resultContainer.classList.add(
-        "hidden"
-    );
-
-
-    if (downloadButton) {
-
-        downloadButton.removeAttribute(
-            "href"
-        );
-
-    }
-
-
-    if (mergedPDFURL) {
-
-        URL.revokeObjectURL(
-            mergedPDFURL
-        );
-
-        mergedPDFURL = null;
-
-    }
-
-
-    mergedPDFBlob = null;
-
-}
-
-
-// ============================================================
-// FORMAT FILE SIZE
-// ============================================================
-
-function formatFileSize(bytes) {
-
-    if (bytes === 0) {
-
-        return "0 Bytes";
-
-    }
-
-
-    const units = [
-        "Bytes",
-        "KB",
-        "MB",
-        "GB"
-    ];
-
-
-    const i =
-        Math.floor(
-            Math.log(bytes) /
-            Math.log(1024)
-        );
-
-
-    const size =
-        bytes /
-        Math.pow(1024, i);
-
-
-    return (
-        size.toFixed(2) +
-        " " +
-        units[i]
-    );
-
-}
-
-
-// ============================================================
-// DOWNLOAD EVENT
-// ============================================================
-
-if (downloadButton) {
-
-    downloadButton.addEventListener(
-        "click",
-        function () {
-
-            if (!mergedPDFBlob) {
-
-                showMessage(
-                    "There is no merged PDF available to download.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-            console.log(
-                "Downloading merged PDF..."
-            );
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// CLEANUP OBJECT URL
-// ============================================================
-
-window.addEventListener(
-    "beforeunload",
-    function () {
-
-        if (mergedPDFURL) {
-
-            URL.revokeObjectURL(
-                mergedPDFURL
-            );
-
-        }
-
-    }
-);
-
-
-// ============================================================
-// DEBUG INFORMATION
-// ============================================================
-
-console.log(
-    "PragyanAI PDF Merger JavaScript loaded successfully."
-);
-```
-
-### What the completed JavaScript does
-
-**1. Select PDF files**
-
-You can select multiple PDF files using your existing:
-
-```html
-<input
-    type="file"
-    id="pdfFiles"
-    accept="application/pdf"
-    multiple
->
-```
-
-The selected files are displayed in the **Selected PDF Files** section.
-
-**2. Validates the files**
-
-* Only PDF files are accepted.
-* At least **2 PDFs** are required.
-* The Merge button remains disabled until 2 or more valid PDFs are selected.
-
-**3. Sends files to FastAPI**
-
-The JavaScript sends all files to:
-
-```text
-POST /merge
-```
-
-using:
-
-```javascript
-formData.append("files", file);
-```
-
-Your HTML already identifies `/merge` as the PDF merge endpoint.
-
-**4. Receives the merged PDF**
-
-The response is converted into a browser `Blob`:
-
-```javascript
-mergedPDFBlob = await response.blob();
-```
-
-Then a temporary download URL is created.
-
-**5. Shows Download button**
-
-After successful merging, the result section appears and the user gets:
-
-**📄 PDF Merged Successfully**
-
-**⬇️ Download Merged PDF**
-
-This corresponds to the result/download section in your HTML.
-
----
-
-## Expected output
-
-When you open your website, it should look approximately like this:
-
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│                 PragyanAI PDF Merger                        │
-│            Upload, Merge and Download PDF Files             │
-│                                                             │
-│          HTML + CSS + JavaScript + FastAPI                  │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-
-
-┌─────────────────────────────────────────────────────────────┐
-│  Backend API Status                              ●          │
-│  Backend API is online                                      │
-└─────────────────────────────────────────────────────────────┘
-
-
-┌─────────────────────────────────────────────────────────────┐
-│  ①   Merge PDF Files                                       │
-│      Select two or more PDF files to merge them into one.   │
-│                                                             │
-│  Select PDF Files                                           │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ Choose Files   file1.pdf, file2.pdf, file3.pdf       │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                             │
-│  Supported: PDF files | Select multiple files               │
-│                                                             │
-│  Selected PDF Files                                         │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ 1. file1.pdf (245 KB)                                │  │
-│  │ 2. file2.pdf (512 KB)                                │  │
-│  │ 3. file3.pdf (1.2 MB)                                │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                             │
-│             📄 Merge PDF Files                              │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-
-
-After successful merging:
-
-
-┌─────────────────────────────────────────────────────────────┐
-│              ✓ PDF Merged Successfully                     │
-│                                                             │
-│       Your PDF files have been merged into one document.   │
-│                                                             │
-│              ⬇️ Download Merged PDF                         │
-└─────────────────────────────────────────────────────────────┘
-
-
-┌─────────────────────────────────────────────────────────────┐
-│  ②   How It Works                                           │
-│                                                             │
-│  Step 1       Step 2       Step 3       Step 4             │
-│  Select       Upload       FastAPI      Download           │
-│  PDFs         files        merges       merged PDF         │
-└─────────────────────────────────────────────────────────────┘
-
-
-┌─────────────────────────────────────────────────────────────┐
-│  ③   API Information                                       │
-│                                                             │
-│  GET  /          API information                            │
-│  GET  /health    Health check                               │
-│  POST /merge     Merge PDF files                            │
-│  GET  /info      Application information                    │
-│                                                             │
-│       📘 Open Swagger API Documentation                     │
-└─────────────────────────────────────────────────────────────┘
-
-
-┌─────────────────────────────────────────────────────────────┐
-│  ④   Technology Stack                                       │
-│                                                             │
-│  Frontend          Frontend Hosting                        │
-│  HTML + CSS + JS   Netlify                                  │
-│                                                             │
-│  Backend           PDF Processing                          │
-│  FastAPI           PyPDF                                    │
-│                                                             │
-│  API Format        File Upload                             │
-│  REST + JSON       FastAPI UploadFile                      │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Important before testing
-
-Change this:
-
-```javascript
-const API_URL =
-    "https://your-fastapi-backend.onrender.com";
-```
-
-to your **actual Render FastAPI URL**, for example:
-
-```javascript
-const API_URL =
-    "https://pragyanai-pdf-merger.onrender.com";
-```
-
-Also, your FastAPI backend must have **CORS enabled** because the frontend will be hosted on Netlify while the backend is hosted on Render. Without CORS, the browser can block the `/health` and `/merge` requests even when the Render backend itself is working.
+});
